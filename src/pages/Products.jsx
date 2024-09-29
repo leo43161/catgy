@@ -1,15 +1,14 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { DialogProduct } from "@/components/Products/DialogProduct"
+import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
 
-export function ProductManagement({ products, setProducts, categories }) {
+export function Products({ products, setProducts, categories }) {
   const [newProduct, setNewProduct] = useState({ name: "", description: "", price: "", stock: "", image: null, categories: [] })
   const [editingProduct, setEditingProduct] = useState(null)
+  const [openModal, setOpenModal] = useState(false)
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -28,17 +27,20 @@ export function ProductManagement({ products, setProducts, categories }) {
   const handleAddProduct = () => {
     setProducts([...products, { ...newProduct, id: Date.now() }])
     setNewProduct({ name: "", description: "", price: "", stock: "", image: null, categories: [] })
+    setOpenModal(false)  // Cerrar el modal después de añadir un producto
   }
 
   const handleEditProduct = (product) => {
     setEditingProduct(product)
     setNewProduct(product)
+    setOpenModal(true)
   }
 
   const handleUpdateProduct = () => {
     setProducts(products.map((p) => (p.id === editingProduct.id ? newProduct : p)))
     setEditingProduct(null)
     setNewProduct({ name: "", description: "", price: "", stock: "", image: null, categories: [] })
+    setOpenModal(false)  // Cerrar el modal después de actualizar un producto
   }
 
   const handleDeleteProduct = (id) => {
@@ -47,75 +49,63 @@ export function ProductManagement({ products, setProducts, categories }) {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Product Management</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-primary">Gestión de Productos</h1>
+        <Button className="flex items-center gap-2" onClick={() => setOpenModal(true)}>
+          <PlusCircle className="w-5 h-5" />
+          Añadir Producto
+        </Button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products.map((product) => (
-          <Card key={product.id}>
+          <Card key={product.id} className="flex flex-col justify-between overflow-hidden">
+            <div>
+              {product.image && (
+                <img
+                  src={URL.createObjectURL(product.image)}
+                  alt={product.name}
+                  className="max-w-full h-auto"
+                />
+              )}
+            </div>
             <CardHeader>
-              <CardTitle>{product.name}</CardTitle>
+              <div className="flex gap-3">
+                {product.categories.map((category) => <Badge>{category}</Badge>)}
+              </div>
+              <CardTitle className="text-xl font-semibold">{product.name}</CardTitle>
+              <p className="text-sm text-muted-foreground">{product.description}</p>
             </CardHeader>
             <CardContent>
-              <p>{product.description}</p>
-              <p>Price: ${product.price}</p>
-              <p>Stock: {product.stock}</p>
-              <p>Categories: {product.categories.join(", ")}</p>
-              {product.image && <img src={URL.createObjectURL(product.image)} alt={product.name} className="mt-2 max-w-full h-auto" />}
+              <p className="text-lg font-bold">${product.price}</p>
+              <p className="text-sm text-muted-foreground">Stock: {product.stock}</p>
             </CardContent>
-            <CardFooter>
-              <Button onClick={() => handleEditProduct(product)} className="mr-2">Edit</Button>
-              <Button onClick={() => handleDeleteProduct(product.id)} variant="destructive">Delete</Button>
+            <CardFooter className="flex justify-between">
+              <Button variant="outline" size="icon" onClick={() => handleEditProduct(product)}>
+                <Pencil className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" size="icon" onClick={() => handleView(product.id)}>
+                <Eye className="w-4 h-4" />
+              </Button>
+              <Button variant="outline" size="icon" onClick={() => handleDeleteProduct(product.id)}>
+                <Trash2 className="w-4 h-4" />
+              </Button>
             </CardFooter>
           </Card>
         ))}
       </div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="mt-4">Add New Product</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{editingProduct ? "Edit Product" : "Add New Product"}</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">Name</Label>
-              <Input id="name" name="name" value={newProduct.name} onChange={handleInputChange} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="description" className="text-right">Description</Label>
-              <Textarea id="description" name="description" value={newProduct.description} onChange={handleInputChange} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="price" className="text-right">Price</Label>
-              <Input id="price" name="price" type="number" value={newProduct.price} onChange={handleInputChange} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="stock" className="text-right">Stock</Label>
-              <Input id="stock" name="stock" type="number" value={newProduct.stock} onChange={handleInputChange} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="image" className="text-right">Image</Label>
-              <Input id="image" name="image" type="file" onChange={handleImageUpload} className="col-span-3" />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="categories" className="text-right">Categories</Label>
-              <Select onValueChange={handleCategoryChange}>
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((category) => (
-                    <SelectItem key={category.id} value={category.name}>{category.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-          <Button onClick={editingProduct ? handleUpdateProduct : handleAddProduct}>
-            {editingProduct ? "Update Product" : "Add Product"}
-          </Button>
-        </DialogContent>
-      </Dialog>
+      <DialogProduct
+        showDialog={openModal}
+        newProduct={newProduct}
+        editingProduct={editingProduct}
+        categories={categories}
+        handleInputChange={handleInputChange}
+        handleImageUpload={handleImageUpload}
+        handleCategoryChange={handleCategoryChange}
+        handleAddProduct={handleAddProduct}
+        handleUpdateProduct={handleUpdateProduct}
+        setOpenModal={setOpenModal}
+      >
+      </DialogProduct>
     </div>
   )
 }
