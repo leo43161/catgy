@@ -15,7 +15,7 @@ export default function index() {
       </h1>
       <div className="flex justify-center">
         <Tabs defaultValue="account" className="flex flex-col items-center justify-center w-full">
-          <TabsList className="h-auto">
+          <TabsList className="h-auto mb-4 md:mb-0">
             <TabsTrigger className="text-2xl" value="account">Productos</TabsTrigger>
             <TabsTrigger className="text-2xl" value="password">Categorias</TabsTrigger>
           </TabsList>

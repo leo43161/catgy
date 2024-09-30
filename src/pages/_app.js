@@ -1,12 +1,16 @@
 // pages/_app.js
+import { Provider } from 'react-redux';
+import store from '../store'; // Asegúrate de que este archivo exista con la configuración de Redux
 import Layout from '@/components/Layout';
 import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
     return (
-        <Layout>
-            <Component {...pageProps} />
-        </Layout>
+        <Provider store={store}>
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
+        </Provider>
     );
 }
 
