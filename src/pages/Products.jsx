@@ -24,7 +24,8 @@ export function Products({ products, setProducts, categories }) {
     setNewProduct({ ...newProduct, categories: [...newProduct.categories, value] })
   }
 
-  const handleAddProduct = () => {
+  const handleAddProduct = (values) => {
+    console.log(values)
     setProducts([...products, { ...newProduct, id: Date.now() }])
     setNewProduct({ name: "", description: "", price: "", stock: "", image: null, categories: [] })
     setOpenModal(false)  // Cerrar el modal después de añadir un producto
