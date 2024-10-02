@@ -16,6 +16,37 @@ export const shopApi = createApi({
       query: () => 'products.json',
     }),
 
+    // Obtener todos los productos con las categorías completas
+    getProductsWithCategories: builder.query({
+      async queryFn(_arg, _queryApi, _extraOptions, fetchWithBQ) {
+
+        // Consultar productos y categorías simultáneamente
+        const [productsResponse, categoriesResponse] = await Promise.all([
+          fetchWithBQ('products.json'),
+          fetchWithBQ('categories.json'),
+        ]);
+
+        // Verificar que ambas respuestas sean exitosas
+        if (productsResponse.error) return { error: productsResponse.error };
+        if (categoriesResponse.error) return { error: categoriesResponse.error };
+
+        // Convertir respuestas a objetos utilizables
+        const products = Object.values(productsResponse.data);
+        const categories = Object.values(categoriesResponse.data);
+
+        // Mapear productos con categorías
+        const productsWithCategories = products.map((product) => {
+          const productCategories = product.categoryIDs.map((categoryID) =>
+            categories.find((category) => category.categoryID === categoryID)
+          );
+          return { ...product, categories: productCategories };
+        });
+
+        // Devolver los productos con las categorías completas
+        return { data: productsWithCategories };
+      },
+    }),
+
     // Obtener productos por ID de categoría
     getProductsByCategory: builder.query({
       query: (categoryID) => `products.json?orderBy="categoryIDs"&equalTo="${categoryID}"`,
@@ -52,4 +83,5 @@ export const {
   useGetProductsByCategoryQuery,
   useGetProductByIdQuery,
   useGetConfigViewQuery,
+  useGetProductsWithCategoriesQuery
 } = shopApi;

@@ -4,24 +4,17 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { DialogProduct } from "@/components/Products/DialogProduct"
 import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { useGetProductsWithCategoriesQuery } from "@/services/shopApi"
 
-export function Products({ products, setProducts, categories }) {
+export function Products({ setProducts }) {
+  const { data: products, isLoading } = useGetProductsWithCategoriesQuery();
   const [newProduct, setNewProduct] = useState({ name: "", description: "", price: "", stock: "", image: null, categories: [] })
   const [editingProduct, setEditingProduct] = useState(null)
   const [openModal, setOpenModal] = useState(false)
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setNewProduct({ ...newProduct, [name]: value })
-  }
-
   const handleImageUpload = (e) => {
     const file = e.target.files[0]
     setNewProduct({ ...newProduct, image: file })
-  }
-
-  const handleCategoryChange = (value) => {
-    setNewProduct({ ...newProduct, categories: [...newProduct.categories, value] })
   }
 
   const handleAddProduct = (values) => {
@@ -58,7 +51,7 @@ export function Products({ products, setProducts, categories }) {
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products.map((product) => (
+        {products?.map((product) => (
           <Card key={product.id} className="flex flex-col justify-between overflow-hidden">
             <div>
               {product.image && (
@@ -71,7 +64,9 @@ export function Products({ products, setProducts, categories }) {
             </div>
             <CardHeader>
               <div className="flex gap-3">
-                {product.categories.map((category) => <Badge>{category}</Badge>)}
+                {product.categories.map((category) => (
+                  <Badge key={category.categoryID}>{category.name}</Badge>
+                ))}
               </div>
               <CardTitle className="text-xl font-semibold">{product.name}</CardTitle>
               <p className="text-sm text-muted-foreground">{product.description}</p>
@@ -96,14 +91,8 @@ export function Products({ products, setProducts, categories }) {
       </div>
       <DialogProduct
         showDialog={openModal}
-        newProduct={newProduct}
         editingProduct={editingProduct}
-        categories={categories}
-        handleInputChange={handleInputChange}
         handleImageUpload={handleImageUpload}
-        handleCategoryChange={handleCategoryChange}
-        handleAddProduct={handleAddProduct}
-        handleUpdateProduct={handleUpdateProduct}
         setOpenModal={setOpenModal}
       >
       </DialogProduct>

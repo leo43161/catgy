@@ -14,6 +14,8 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useState } from "react";
+import { useGetCategoriesQuery } from "@/services/shopApi";
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().required('El nombre es obligatorio'),
@@ -25,17 +27,28 @@ const validationSchema = Yup.object().shape({
 });
 
 export const DialogProduct = ({
-    newProduct,
     editingProduct,
-    categories,
     handleImageUpload,
-    handleCategoryChange,
-    handleAddProduct,
-    handleUpdateProduct,
     showDialog,
     setOpenModal,
 }) => {
-    console.log(categories);
+    const { data: categoriesAll, isLoading } = useGetCategoriesQuery();
+    console.log(categoriesAll)
+
+    const [newProduct, setNewProduct] = useState({
+        productID: "", // Este se genera automáticamente al guardar el producto
+        name: "",
+        description: "",
+        price: "",
+        stock: "", // Si decides usar stock, asegúrate de que también esté en Firebase
+        image: null, // imageURL: Aquí deberás subir la imagen a Firebase Storage y guardar la URL
+        categories: [] // categoryIDs: Aquí deberías almacenar los IDs de las categorías, no los nombres
+    });
+
+    const submitAddHandler = () => {
+        /* Manejo del submit para cargar un producto a firebase */
+    }
+
     return (
         <Dialog open={showDialog} onOpenChange={setOpenModal}>
             <DialogContent>
@@ -45,7 +58,7 @@ export const DialogProduct = ({
                 <Formik
                     initialValues={newProduct}
                     validationSchema={validationSchema}
-                    onSubmit={editingProduct ? handleUpdateProduct : handleAddProduct}
+                    onSubmit={editingProduct ? null/* handleUpdateProduct */ : submitAddHandler}
                 >
                     {({ setFieldValue }) => (
                         <Form>
@@ -79,7 +92,6 @@ export const DialogProduct = ({
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="categories" className="text-right">Categorías</Label>
-
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
                                             <Button className="col-span-3" variant="outline">Seleccionar categoria</Button>
@@ -87,13 +99,16 @@ export const DialogProduct = ({
                                         <DropdownMenuContent className="w-full">
                                             <DropdownMenuLabel>Appearance</DropdownMenuLabel>
                                             <DropdownMenuSeparator />
-                                            {categories.map((category) => (
+                                            {categoriesAll.map((category) => (
                                                 <DropdownMenuCheckboxItem
-                                                    checked={newProduct.categories.includes(category.id)}
-                                                    onCheckedChange={() => {
-                                                        handleCategoryChange(category.id)
-                                                        console.log(newProduct.categories)
-                                                        setFieldValue("categories", newProduct.categories);
+                                                    key={category.categoryID}
+                                                    checked={newProduct.categories.includes(category.categoryID)}
+                                                    onCheckedChange={(checked) => {
+                                                        const updatedCategories = checked
+                                                            ? [...newProduct.categories, category.categoryID] // Agrega la categoría si está seleccionada
+                                                            : newProduct.categories.filter((id) => id !== category.categoryID); // Elimina la categoría si se deselecciona
+
+                                                        setFieldValue("categories", updatedCategories); // Actualiza el valor en Formik
                                                     }}
                                                 >
                                                     {category.name}
