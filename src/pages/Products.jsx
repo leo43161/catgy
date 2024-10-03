@@ -59,7 +59,7 @@ export function Products({ setProducts }) {
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {/* products? */[].map((product) => (
+        {products?.map((product) => (
           <Card key={product.id} className="flex flex-col justify-between overflow-hidden">
             <div>
               {product.image && (
@@ -72,9 +72,9 @@ export function Products({ setProducts }) {
             </div>
             <CardHeader>
               <div className="flex gap-3">
-                {product.categories.map((category) => (
+                {/* {product?.categories.map((category) => (
                   <Badge key={category.categoryID}>{category.name}</Badge>
-                ))}
+                ))} */}
               </div>
               <CardTitle className="text-xl font-semibold">{product.name}</CardTitle>
               <p className="text-sm text-muted-foreground">{product.description}</p>

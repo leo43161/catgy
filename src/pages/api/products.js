@@ -1,21 +1,26 @@
-import { db } from "@/lib/firebase";
-import { collection, getDocs, query, limit, startAfter } from "firebase/firestore";
+// Importa las funciones correctas de Firebase
+import { ref, child, get } from "firebase/database";
+import { database } from "@/lib/firebase"; // Asegúrate de exportar `database` correctamente desde tu archivo firebase.js
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
-      const productsRef = collection(db, 'products');
-      console.log(productsRef);
-      const q = query(productsRef, limit(10));  // Agrega limit y otros parámetros si es necesario
-      const querySnapshot = await getDocs(q);
+      // Referencia a la raíz de la base de datos
+      const dbRef = ref(database);
 
-      const products = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      // Obtenemos los productos desde Firebase Realtime Database
+      const snapshot = await get(child(dbRef, `products`));
 
-      res.status(200).json({ products });
+      if (snapshot.exists()) {
+        const products = snapshot.val();
+        console.log(products);
+        res.status(200).json(products);
+      } else {
+        res.status(404).json({ error: 'No data available' });
+      }
+
     } catch (error) {
+      console.error("Error fetching products:", error);
       res.status(500).json({ error: 'Error fetching products' });
     }
   } else {
