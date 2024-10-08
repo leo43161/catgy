@@ -1,29 +1,23 @@
-// Importa las funciones correctas de Firebase
-import { ref, child, get } from "firebase/database";
-import { database } from "@/lib/firebase"; // Asegúrate de exportar `database` correctamente desde tu archivo firebase.js
+import clientPromise from "@/lib/mongodb"; // Asegúrate de que el archivo mongodb.js esté configurado correctamente
+import mongoose from 'mongoose';
+import Product from "@/models/Product"; // Asegúrate de que la ruta sea correcta según la estructura de tu proyecto
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
-      // Referencia a la raíz de la base de datos
-      const dbRef = ref(database);
+      // Espera a que la conexión a MongoDB esté lista
+      await clientPromise;
 
-      // Obtenemos los productos desde Firebase Realtime Database
-      const snapshot = await get(child(dbRef, `products`));
-
-      if (snapshot.exists()) {
-        const products = snapshot.val();
-        console.log(products);
-        res.status(200).json(products);
-      } else {
-        res.status(404).json({ error: 'No data available' });
-      }
-
+      // Obtén todos los productos de la base de datos
+      const products = await Product.find({}); // Aquí puedes agregar filtros si es necesario
+      console.log(products)
+      res.status(200).json(products);
     } catch (error) {
       console.error("Error fetching products:", error);
       res.status(500).json({ error: 'Error fetching products' });
     }
   } else {
+    res.setHeader('Allow', ['GET']);
     res.status(405).json({ message: 'Method not allowed' });
   }
 }
