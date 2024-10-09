@@ -23,7 +23,7 @@ export function Products({ setProducts }) {
   const { data: products, isLoading } = useGetProductsQuery();
 
   console.log(products);
-  
+
   const totalPages = products ? Math.ceil(products.length / limit) : 1; // Asegúrate de tener el total correcto
 
   const [newProduct, setNewProduct] = useState({ name: "", description: "", price: "", stock: "", image: null, categories: [] });
