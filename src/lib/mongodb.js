@@ -5,8 +5,6 @@ const connectMongo = async () => {
     try {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGO_URI, {
         dbName: 'catgy2024',
-        useNewUrlParser: true, 
-        useUnifiedTopology: true,
       });
       console.log('MongoDB connected');
     } catch (error) {

@@ -1,27 +1,24 @@
 import mongoose from 'mongoose';
 
 const ProductSchema = new mongoose.Schema({
-  productID: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   name: {
     type: String,
-    required: [true, 'Please provide the name of the product'],
+    required: [true, 'Por favor, proporciona el nombre del producto'],
   },
   price: {
     type: Number,
-    required: [true, 'Please provide the price of the product'],
+    required: [true, 'Por favor, proporciona el precio del producto'],
   },
   description: {
     type: String,
     required: false,
   },
-  categoryIDs: {
-    type: [String],
-    required: true,
-  },
+  categoryIDs: [
+    {
+      type: mongoose.ObjectId,
+      ref: 'categories',
+    },
+  ],
   imageURL: {
     type: String,
     required: false,

@@ -1,14 +1,9 @@
 import mongoose from 'mongoose';
 
 const CategorySchema = new mongoose.Schema({
-  categoryID: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   name: {
     type: String,
-    required: [true, 'Please provide the name of the category'],
+    required: [true, 'Por favor, proporciona el nombre de la categoría'],
   },
   active: {
     type: Boolean,
@@ -20,19 +15,15 @@ const CategorySchema = new mongoose.Schema({
     required: true,
     default: true,
   },
-  products: {
-    type: [String], // Array de IDs de productos
-    default: [],
-  },
   createdBy: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId, // ObjectId para coincidir con el valor en la base de datos
     required: true,
+    ref: 'User', // Hace referencia a la colección 'User' (si es aplicable)
   },
   createdAt: {
-    type: Date,
+    type: String, // String en formato ISODate como en la base de datos
     required: true,
-    default: Date.now,
   },
 });
 
-export default mongoose.models.Category || mongoose.model('Category', CategorySchema);
+export default mongoose.models.categories || mongoose.model('categories', CategorySchema);
