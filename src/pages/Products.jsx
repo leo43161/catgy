@@ -1,30 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { DialogProduct } from "@/components/Products/DialogProduct";
 import { PlusCircle, Eye, Pencil, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { useGetProductsQuery } from "@/services/shopApi";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { useGetProductsQuery } from "@/services/shopApi"; // Debes ajustar tu shopApi para recibir los parámetros
 
-export function Products({ setProducts }) {
+export function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 1;
   const offset = (currentPage - 1) * limit;
 
-  const { data: products, isLoading } = useGetProductsQuery();
+  const { data: response, isLoading } = useGetProductsQuery({ limit, offset });
 
-  console.log(products);
-
-  const totalPages = products ? Math.ceil(products.length / limit) : 1; // Asegúrate de tener el total correcto
+  const products = response?.products;
+  const total = response?.total;
+  const totalPages = total ? Math.ceil(total / limit) : 1;
 
   const [newProduct, setNewProduct] = useState({ name: "", description: "", price: "", stock: "", image: null, categories: [] });
   const [editingProduct, setEditingProduct] = useState(null);
@@ -42,7 +34,7 @@ export function Products({ setProducts }) {
   };
 
   const handleDeleteProduct = (id) => {
-    setProducts(products.filter((p) => p.id !== id));
+    // Lógica para eliminar producto
   };
 
   const handlePageChange = (page) => {
@@ -60,7 +52,7 @@ export function Products({ setProducts }) {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {products?.map((product) => (
-          <Card key={product.id} className="flex flex-col justify-between overflow-hidden">
+          <Card key={product._id} className="flex flex-col justify-between overflow-hidden">
             <div>
               {product.image && (
                 <img
@@ -72,9 +64,9 @@ export function Products({ setProducts }) {
             </div>
             <CardHeader>
               <div className="flex gap-3">
-                {/* {product?.categories.map((category) => (
-                  <Badge key={category.categoryID}>{category.name}</Badge>
-                ))} */}
+                {product?.categoryIDs?.map((category, idx) => (
+                  <Badge key={idx}>{category.name}</Badge>
+                ))}
               </div>
               <CardTitle className="text-xl font-semibold">{product.name}</CardTitle>
               <p className="text-sm text-muted-foreground">{product.description}</p>
@@ -98,15 +90,15 @@ export function Products({ setProducts }) {
         ))}
       </div>
 
-      {/* Componente de paginación */}
-      {/* <Pagination>
+      {/* Paginación */}
+      <Pagination>
         <PaginationContent>
           <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
           {[...Array(totalPages).keys()].map((number) => (
             <PaginationItem key={number}>
-              <PaginationLink 
-                href="#" 
-                onClick={() => handlePageChange(number + 1)} 
+              <PaginationLink
+                href="#"
+                onClick={() => handlePageChange(number + 1)}
                 isActive={currentPage === number + 1}
               >
                 {number + 1}
@@ -115,7 +107,7 @@ export function Products({ setProducts }) {
           ))}
           <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
         </PaginationContent>
-      </Pagination> */}
+      </Pagination>
 
       <DialogProduct
         showDialog={openModal}

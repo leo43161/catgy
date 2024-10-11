@@ -11,7 +11,7 @@ export const shopApi = createApi({
     }),
 
     getProducts: builder.query({
-      query: () => 'products',
+      query: ({ limit, offset }) => `products?limit=${limit}&offset=${offset}`, // Agregamos limit y offset a la query string
     }),
 
     // Obtener productos por ID de categoría

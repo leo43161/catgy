@@ -14,10 +14,10 @@ export default async function handler(req, res) {
       res.json({ createdUser });
     } else if (req.method === 'GET') {
       console.log('FETCHING DOCUMENTS');
-      const fetchedUsers = await Category.find({});
+      const fetchedCategories = await Category.find({});
       console.log('FETCHED DOCUMENTS');
-      console.log(fetchedUsers);
-      res.json(fetchedUsers);
+      console.log(fetchedCategories);
+      res.json(fetchedCategories);
     } else {
       throw new Error(`Unsupported HTTP method: ${req.method}`);
     }

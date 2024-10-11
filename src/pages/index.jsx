@@ -20,11 +20,7 @@ export default function index() {
             <TabsTrigger className="text-2xl" value="password">Categorias</TabsTrigger>
           </TabsList>
           <TabsContent className="w-full" value="account">
-            <Products
-              products={products}
-              setProducts={setProducts}
-              categories={categories}
-            />
+            <Products />
           </TabsContent>
           <TabsContent className="w-full" value="password">
             <Category

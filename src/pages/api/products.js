@@ -1,7 +1,6 @@
-import connectMongo from "@/lib/mongodb"; // Asegúrate de que el archivo mongoose.js esté configurado correctamente
-import Product from "@/models/Product"; // Asegúrate de que la ruta sea correcta según la estructura de tu proyecto
-import Category from "@/models/Category"; // Asegúrate de que la ruta sea correcta según la estructura de tu proyecto
-import User from "@/models/User"; // Asegúrate de que la ruta sea correcta según la estructura de tu proyecto
+import connectMongo from "@/lib/mongodb";
+import Category from "@/models/Category";
+import Product from "@/models/Product";
 
 export default async function handler(req, res) {
   try {
@@ -16,16 +15,18 @@ export default async function handler(req, res) {
       res.json({ createdUser });
     } else if (req.method === 'GET') {
       console.log('FETCHING DOCUMENTS');
-      const fetchedProduct = await Product.find({})
-      .populate('categoryIDs') // Aquí puedes especificar los campos que deseas seleccionar de la colección "categories"
-      .exec();
+      // Obtener el limit y el offset desde las query params
+      const { limit, offset } = req.query;
+      // Contar el número total de productos para calcular el total de páginas
+      const totalProducts = await Product.countDocuments();
+      // Obtener los productos con paginación
       const fetchedCategory = await Category.find({});
-      const fetchedUser = await User.find({})
-      console.log('FETCHED DOCUMENTS');
-      console.log(fetchedProduct);
-      console.log(fetchedCategory);
-      console.log(fetchedUser);
-      res.json(fetchedProduct);
+      const fetchedProducts = await Product.find({})
+        .populate('categoryIDs', "name")
+        .skip(parseInt(offset))
+        .limit(parseInt(limit))
+        .exec();
+      res.json({ products: fetchedProducts, total: totalProducts });
     } else {
       throw new Error(`Unsupported HTTP method: ${req.method}`);
     }
