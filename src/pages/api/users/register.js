@@ -10,10 +10,13 @@ export default async function handler(req, res) {
       // Registrar usuario
       const { name, email, password, phoneNumber, role } = req.body;
 
-      // Verificar si el usuario ya existe
+      // Verificar si el usuario ya existe y si la contraseña cumple
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json({ error: "El correo electrónico ya está registrado" });
+      }
+      if (password.length < 6) {
+        return res.status(400).json({ error: "La contraseña debe tener al menos 6 caracteres" });
       }
 
       // Hashear la contraseña

@@ -4,6 +4,9 @@ export const userApi = createApi({
   reducerPath: 'userApi',
   baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
   endpoints: (builder) => ({
+    getUsers: builder.query({
+      query: ({ limit, offset }) => `users?limit=${limit}&offset=${offset}`, // Agregamos limit y offset a la query string
+    }),
     registerUser: builder.mutation({
       query: (userData) => ({
         url: '/users/register',
@@ -18,10 +21,7 @@ export const userApi = createApi({
         body: credentials,
       }),
     }),
-    fetchUsers: builder.query({
-      query: () => '/users',
-    }),
   }),
 });
 
-export const { useRegisterUserMutation, useLoginUserMutation, useFetchUsersQuery } = userApi;
+export const { useRegisterUserMutation, useLoginUserMutation, useGetUsersQuery } = userApi;

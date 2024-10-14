@@ -15,7 +15,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useGetUsersQuery } from "@/services/usersApi";
+import { useGetUsersQuery } from "@/services/userApi";
 import { DialogUser } from "@/components/Users/DialogUser";
 
 export default function Products() {
@@ -32,11 +32,6 @@ export default function Products() {
     const [newProduct, setNewProduct] = useState({ name: "", description: "", price: "", stock: "", image: null, categories: [] });
     const [editingProduct, setEditingProduct] = useState(null);
     const [openModal, setOpenModal] = useState(false);
-
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        setNewProduct({ ...newProduct, image: file });
-    };
 
     const handleEditProduct = (product) => {
         setEditingProduct(product);
