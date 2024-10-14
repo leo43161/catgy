@@ -1,36 +1,19 @@
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Products } from "./Products"
-import { useState } from "react"
-import { Category } from "./Category"
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 
-export default function index() {
-  const [products, setProducts] = useState([])
-  const [categories, setCategories] = useState([])
-  console.log(products);
-  console.log(categories);
-  return (
-    <div className="container mx-auto p-6 min-h-screen">
-      <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
-        Maneja tus productos y categorias desde de aqui
-      </h1>
-      <div className="flex justify-center">
-        <Tabs defaultValue="account" className="flex flex-col items-center justify-center w-full">
-          <TabsList className="h-auto mb-4 md:mb-0">
-            <TabsTrigger className="text-2xl" value="account">Productos</TabsTrigger>
-            <TabsTrigger className="text-2xl" value="password">Categorias</TabsTrigger>
-          </TabsList>
-          <TabsContent className="w-full" value="account">
-            <Products />
-          </TabsContent>
-          <TabsContent className="w-full" value="password">
-            <Category
-              products={products}
-              setCategories={setCategories}
-              categories={categories}
-            />
-          </TabsContent>
-        </Tabs>
-      </div>
-    </div>
-  )
+export default function Home() {
+    const router = useRouter();
+    const user = true;
+    /* const user = useSelector((state) => state.auth.user); */
+
+    useEffect(() => {
+        if (user) {
+            router.push('/dashboard'); // Redirige al dashboard si el usuario ya está autenticado
+        } else {
+            router.push('/auth/login'); // Redirige al login si no está autenticado
+        }
+    }, [user, router]);
+
+    return null;
 }

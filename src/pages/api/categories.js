@@ -16,7 +16,6 @@ export default async function handler(req, res) {
       console.log('FETCHING DOCUMENTS');
       const fetchedCategories = await Category.find({});
       console.log('FETCHED DOCUMENTS');
-      console.log(fetchedCategories);
       res.json(fetchedCategories);
     } else {
       throw new Error(`Unsupported HTTP method: ${req.method}`);

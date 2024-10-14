@@ -10,9 +10,9 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
       console.log('CREATING DOCUMENT');
-      const createdUser = await Product.create(req.body);
+      const createdProduct = await Product.create(req.body);
       console.log('CREATED DOCUMENT');
-      res.json({ createdUser });
+      res.json({ createdProduct });
     } else if (req.method === 'GET') {
       console.log('FETCHING DOCUMENTS');
       // Obtener el limit y el offset desde las query params

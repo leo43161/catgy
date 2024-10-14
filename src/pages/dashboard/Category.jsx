@@ -58,14 +58,6 @@ export function Category({ categories, setCategories, products }) {
                         <CardHeader>
                             <CardTitle>{category.name}</CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <p>Associated Products:</p>
-                            <ul>
-                                {products.filter((p) => p.categories.includes(category.name)).map((p) => (
-                                    <li key={p.id}>{p.name}</li>
-                                ))}
-                            </ul>
-                        </CardContent>
                         <CardFooter>
                             <Button onClick={() => handleEditCategory(category)} className="mr-2">Edit</Button>
                             <Button onClick={() => handleDeleteCategory(category.id)} variant="destructive">Delete</Button>
