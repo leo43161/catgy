@@ -16,6 +16,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { useGetUsersQuery } from "@/services/usersApi";
+import { DialogUser } from "@/components/Users/DialogUser";
 
 export default function Products() {
     const [currentPage, setCurrentPage] = useState(1);
@@ -60,17 +61,17 @@ export default function Products() {
                     Añadir Usuario
                 </Button>
             </div>
-            <div className="bg-zinc-950 border rounded-lg">
-                <Table className="text-zinc-100">
+            <div className="bg-zinc-800 border rounded-lg mb-5">
+                <Table >
                     <TableHeader>
-                        <TableRow>
-                            <TableHead>Nombre</TableHead>
-                            <TableHead>Rol</TableHead>
-                            <TableHead>E-mail</TableHead>
-                            <TableHead className="text-right">Editar</TableHead>
+                        <TableRow >
+                            <TableHead className="text-zinc-100 font-bold">Nombre</TableHead>
+                            <TableHead className="text-zinc-100 font-bold">Rol</TableHead>
+                            <TableHead className="text-zinc-100 font-bold">E-mail</TableHead>
+                            <TableHead className="text-right text-zinc-100 font-bold">Editar</TableHead>
                         </TableRow>
                     </TableHeader>
-                    <TableBody>
+                    <TableBody className="text-zinc-100">
                         {users?.map((product) => (
                             <TableRow key={product._id}>
                                 <TableCell className="font-medium w-1/6">{product.name}</TableCell>
@@ -94,8 +95,6 @@ export default function Products() {
                     </TableBody>
                 </Table>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            </div>
 
             {/* Paginación */}
             <Pagination>
@@ -116,10 +115,9 @@ export default function Products() {
                 </PaginationContent>
             </Pagination>
 
-            <DialogProduct
+            <DialogUser
                 showDialog={openModal}
-                editingProduct={editingProduct}
-                handleImageUpload={handleImageUpload}
+                editingUser={editingProduct}
                 setOpenModal={setOpenModal}
             />
         </div>

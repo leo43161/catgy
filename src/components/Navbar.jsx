@@ -21,7 +21,7 @@ export default function Navbar() {
 
     return (
         <nav className="bg-white shadow-md px-4 py-2 md:flex md:items-center md:justify-between">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center me-5">
                 <span className="text-xl font-semibold text-gray-800">Dashboard</span>
                 <button
                     className="text-gray-800 md:hidden block"
@@ -49,19 +49,19 @@ export default function Navbar() {
                     } md:flex`}
             >
                 <ul className="flex flex-col md:flex-row md:space-x-6">
-                    <li>
+                    {/* <li>
                         <Link className="text-gray-600 hover:text-gray-800" href="/dashboard">
                             <p className='mb-0'>Inicio</p>
                         </Link>
-                    </li>
+                    </li> */}
                     <li>
                         <Link className="text-gray-600 hover:text-gray-800" href="/dashboard/products">
                             <p className='mb-0'>Productos</p>
                         </Link>
                     </li>
                     <li>
-                        <Link className="text-gray-600 hover:text-gray-800" href="/dashboard/categories">
-                            <p className='mb-0'>Categorías</p>
+                        <Link className="text-gray-600 hover:text-gray-800" href="/dashboard/users">
+                            <p className='mb-0'>Usuarios</p>
                         </Link>
                     </li>
                 </ul>

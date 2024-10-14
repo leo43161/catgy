@@ -9,7 +9,7 @@ export default function Home() {
 
     useEffect(() => {
         if (user) {
-            router.push('/dashboard'); // Redirige al dashboard si el usuario ya está autenticado
+            router.push('/dashboard/products'); // Redirige al dashboard si el usuario ya está autenticado
         } else {
             router.push('/auth/login'); // Redirige al login si no está autenticado
         }
