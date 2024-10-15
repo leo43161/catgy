@@ -14,7 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useState } from "react";
-import { useGetCategoriesQuery } from "@/services/shopApi";
+import { useGetCategoriesAllQuery } from "@/services/shopApi";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('El nombre es obligatorio'),
@@ -32,7 +32,7 @@ export const DialogProduct = ({
   showDialog,
   setOpenModal,
 }) => {
-  const { data: categoriesAll, isLoading } = useGetCategoriesQuery();
+  const { data: categoriesAll, isLoading } = useGetCategoriesAllQuery();
 
   const [newProduct, setNewProduct] = useState({
     name: "",

@@ -7,7 +7,11 @@ export const shopApi = createApi({
   endpoints: (builder) => ({
 
     getCategories: builder.query({
-      query: () => 'categories',
+      query: ({ limit, offset }) => `categories?limit=${limit}&offset=${offset}`,
+    }),
+
+    getCategoriesAll: builder.query({
+      query: () => 'categories?type=all',
     }),
 
     getProducts: builder.query({
@@ -46,6 +50,7 @@ export const shopApi = createApi({
 // Exportar hooks para usar en los componentes
 export const {
   useGetCategoriesQuery,
+  useGetCategoriesAllQuery,
   useGetProductsQuery,
   useGetProductsByCategoryQuery,
   useGetProductByIdQuery,

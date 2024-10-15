@@ -20,7 +20,6 @@ export default async function handler(req, res) {
       // Contar el número total de productos para calcular el total de páginas
       const totalProducts = await Product.countDocuments();
       // Obtener los productos con paginación
-      const fetchedCategory = await Category.find({});
       const fetchedProducts = await Product.find({})
         .populate('categoryIDs', "name")
         .skip(parseInt(offset))

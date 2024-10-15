@@ -14,9 +14,22 @@ export default async function handler(req, res) {
       res.json({ createdUser });
     } else if (req.method === 'GET') {
       console.log('FETCHING DOCUMENTS');
-      const fetchedCategories = await Category.find({});
-      console.log('FETCHED DOCUMENTS');
-      res.json(fetchedCategories);
+      // Obtener el limit y el offset desde las query params
+      const { limit, offset, type } = req.query;
+      if (type !== "all") {
+        // Contar el número total de productos para calcular el total de páginas
+        const totalCategories = await Category.countDocuments();
+
+        const fetchedCategories = await Category.find({})
+          .skip(parseInt(offset))
+          .limit(parseInt(limit))
+          .exec();
+        console.log('FETCHED DOCUMENTS');
+        res.json({ fetchedCategories, total: totalCategories });
+      } else {
+        const fetchedCategories = await Category.find({});
+        res.json(fetchedCategories);
+      }
     } else {
       throw new Error(`Unsupported HTTP method: ${req.method}`);
     }
