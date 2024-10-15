@@ -1,0 +1,29 @@
+{
+    "roles": [
+        {
+            "id": 1,
+            "rol": "admin",
+            "rutas": [
+                "/",
+                "/products",
+                "/articulos"
+            ],
+            "secciones": [
+                "products",
+                "articulos",
+                "carga"
+            ]
+        },
+        {
+            "id": 2,
+            "rol": "vendedor",
+            "rutas": [
+                "/",
+                "/products"
+            ],
+            "secciones": [
+                "products"
+            ]
+        }
+    ]
+}
