@@ -22,9 +22,8 @@ const UserSchema = new mongoose.Schema({
     match: [/^\d{10}$/, 'Por favor, proporciona un número de teléfono válido'], // Valida que el número de teléfono contenga 10 dígitos
   },
   role: {
-    type: String,
-    enum: ['vendedor', 'administrador', 'cliente'], // Define los roles permitidos
-    default: 'cliente', // Establece un rol por defecto
+    type: Number,
+    default: 2, // Establece un rol por defecto
   },
   createdAt: {
     type: Date,

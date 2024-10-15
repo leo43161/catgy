@@ -15,7 +15,7 @@ const validationSchema = Yup.object().shape({
   email: Yup.string().email('Debe ser un correo válido').required('El correo es obligatorio'),
   password: Yup.string().min(6, 'La contraseña debe tener al menos 6 caracteres').required('La contraseña es obligatoria'),
   phoneNumber: Yup.string().matches(/^\d{10}$/, 'El número de teléfono debe tener 10 dígitos').required('El número de teléfono es obligatorio'),
-  role: Yup.string().oneOf(['vendedor', 'administrador', 'cliente'], 'Rol no válido').required('El rol es obligatorio'),
+  role: Yup.string().oneOf(["1", "2", "3"], 'Rol no válido').required('El rol es obligatorio'),
 });
 
 export const DialogUser = ({
@@ -30,12 +30,14 @@ export const DialogUser = ({
     email: "",
     password: "",
     phoneNumber: "",
-    role: "cliente", // Valor por defecto
+    role: 2, // Valor por defecto
   };
 
   const submitHandler = async (values) => {
     try {
-      await registerUser(values).unwrap();
+      // Convertir role a número antes de enviar al backend
+      const userData = { ...values, role: parseInt(values.role) };
+      await registerUser(userData).unwrap();
       setOpenModal(false); // Cerrar modal si el registro es exitoso
     } catch (error) {
       console.log
@@ -80,9 +82,9 @@ export const DialogUser = ({
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="role" className="text-right">Rol</Label>
                 <Field as="select" id="role" name="role" className="col-span-3">
-                  <option value="cliente">Cliente</option>
-                  <option value="vendedor">Vendedor</option>
-                  <option value="administrador">Administrador</option>
+                  <option value={3}>Cliente</option>
+                  <option value={2}>Vendedor</option>
+                  <option value={1}>Administrador</option>
                 </Field>
                 <ErrorMessage name="role" component="div" className="text-red-500" />
               </div>

@@ -1,5 +1,5 @@
 import connectMongo from "@/lib/mongodb";
-import Category from "@/models/Category";
+import User from "@/models/User";
 import Product from "@/models/Product";
 
 export default async function handler(req, res) {
@@ -15,6 +15,7 @@ export default async function handler(req, res) {
       res.json({ createdProduct });
     } else if (req.method === 'GET') {
       console.log('FETCHING DOCUMENTS');
+      const fetchedUsers = await User.find({})
       // Obtener el limit y el offset desde las query params
       const { limit, offset } = req.query;
       // Contar el número total de productos para calcular el total de páginas
