@@ -9,7 +9,7 @@ export default async function handler(req, res) {
     case "GET":
       return await getLogin(req, res);
     case "POST":
-      return loginHandler(req, res);
+      return await loginHandler(req, res);
     case "PUT":
       return await putOrdenDetalle(req, res);
     default:
@@ -18,10 +18,8 @@ export default async function handler(req, res) {
 }
 
 const loginHandler = async (req, res) => {
-  console.log("NODE_ENV", process.env.NODE_ENV !== 'production')
   try {
     const { email: emailLogin, password } = req.body;
-    console.log(emailLogin);
     await connectMongo();
     // Buscar usuario por correo electrónico
     const user = await User.findOne({ email: emailLogin });
@@ -34,8 +32,6 @@ const loginHandler = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(400).json({ error: "Contraseña invalida" });
     }
-    console.log(isPasswordValid);
-    console.log(user);
 
     const { name, role, phoneNumber, email } = user;
     const token = sign({

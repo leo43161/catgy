@@ -5,13 +5,18 @@
             "rol": "admin",
             "rutas": [
                 "/",
-                "/products",
-                "/articulos"
+                "/dashboard/products",
+                "/dashboard/users"
+            ],
+            "api": [
+                "/api/users",
+                "/api/users/register",
+                "/api/categories",
+                "/api/products"
             ],
             "secciones": [
                 "products",
-                "articulos",
-                "carga"
+                "users"
             ]
         },
         {
@@ -19,7 +24,11 @@
             "rol": "vendedor",
             "rutas": [
                 "/",
-                "/products"
+                "/dashboard/products"
+            ],
+            "api": [
+                "/api/categories",
+                "/api/products"
             ],
             "secciones": [
                 "products"
