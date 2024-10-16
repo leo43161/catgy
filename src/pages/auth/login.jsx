@@ -3,16 +3,22 @@ import { useDispatch } from 'react-redux';
 /* import { loginUser } from '@/store/features/authSlice'; */
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useLoginUserMutation } from '@/services/userApi';
 
 export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loginUser, { isLoading }] = useLoginUserMutation();
     const dispatch = useDispatch();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log({ email, password })
-        /* dispatch(loginUser({ email, password })); */
+        try {
+           const response = loginUser({ email, password }).unwrap();
+           console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     return (
@@ -35,7 +41,9 @@ export default function Login() {
                     placeholder="Contraseña"
                     className="mb-4"
                 />
-                <Button type="submit" className="w-full">Ingresar</Button>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? "Verificando..." : "Ingresar"}
+                </Button>
             </form>
         </div>
     );
