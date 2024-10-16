@@ -17,6 +17,19 @@ export default async function handler(req, res) {
   }
 }
 
+const getLogin = (req, res) => {
+  const { token } = req.cookies;
+  if (!token) {
+      return res.status(401).json({ error: 'Token not found' });
+  }
+  try {
+      verify(token, process.env.secretJWT);
+      return res.status(200).json('login confirmed');
+  } catch (error) {
+      return res.status(401).json({ error: 'Token not found' });
+  }
+}
+
 const loginHandler = async (req, res) => {
   try {
     const { email: emailLogin, password } = req.body;
@@ -53,8 +66,7 @@ const loginHandler = async (req, res) => {
       usuario: name,
       email,
       phoneNumber,
-      role,
-      token
+      role
     });
   } catch (error) {
     return res.status(500).json({ error });
