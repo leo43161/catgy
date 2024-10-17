@@ -1,10 +1,11 @@
 // pages/_app.js
 import { Provider } from 'react-redux';
-import store from '@/store/index'; // Asegúrate de que este archivo exista con la configuración de Redux
+import store from '@/store/index';
 import Layout from '@/components/Layout';
 import '../styles/globals.css';
 import Navbar from '@/components/Navbar';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { loginVerify } from '@/helpers';
 
 function MyApp({ Component, pageProps }) {
     return (
@@ -15,12 +16,26 @@ function MyApp({ Component, pageProps }) {
 }
 
 function AppContent({ Component, pageProps }) {
-    const { user } = useSelector((state) => state.userReducer);
-    console.log(user);
+    const [logged, setLogged] = useState(false);
+    const [loggedReload, setLoggedReload] = useState(true);
+
+    /* Verifica si el usuario ya inició sesión */
+    useEffect(() => {
+        if (loggedReload) {
+            checkLogged();
+            setLoggedReload(false);
+        }
+    }, [loggedReload]);
+
+    const checkLogged = async () => {
+        const isLogged = await loginVerify();
+        setLogged(isLogged);
+    };
+
     return (
         <Layout>
             {/* Solo muestra la Navbar si hay un usuario */}
-            {user && <Navbar />}
+            {logged && <Navbar />}
             <Component {...pageProps} />
         </Layout>
     );

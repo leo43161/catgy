@@ -1,26 +1,24 @@
-// src/features/productsSlice.js
+// src/features/user/userSlice.js
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  value: null,
+  value: {
+    user: null,
+  }, // Cambiado a 'null' para indicar que no hay usuario por defecto
 };
 
-const productsSlice = createSlice({
+const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setProducts(state, action) {
-      state.value.items = action.payload; // Se accede correctamente a "items" dentro de "value"
+    setUser(state, action) {
+      state.value.user = action.payload; // Guardar el usuario completo
     },
-    deleteProduct(state) {
-      state.value.items = {
-        user: "",
-        email: "",
-        phoneNumber: "",
-      };
+    clearUser(state) {
+      state.value.user = null; // Limpiar el usuario
     },
   },
 });
 
-export const { setProducts, addProduct, updateProduct, deleteProduct } = productsSlice.actions;
-export default productsSlice.reducer;
+export const { setUser, clearUser } = userSlice.actions;
+export default userSlice.reducer;

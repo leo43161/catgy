@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useLoginUserMutation } from '@/services/userApi';
+import { setUser } from '@/features/user/userSlice';
 
 export default function Login() {
     const [email, setEmail] = useState('');
@@ -11,11 +12,11 @@ export default function Login() {
     const [loginUser, { isLoading }] = useLoginUserMutation();
     const dispatch = useDispatch();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-           const response = loginUser({ email, password }).unwrap();
-           console.log(response);
+            const response = await loginUser({ email, password }).unwrap();
+            dispatch(setUser(response));
         } catch (error) {
             console.log(error);
         }

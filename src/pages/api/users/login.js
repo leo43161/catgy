@@ -20,11 +20,11 @@ export default async function handler(req, res) {
 const getLogin = (req, res) => {
   const { token } = req.cookies;
   if (!token) {
-      return res.status(401).json({ error: 'Token not found' });
+    return res.status(401).json({ error: 'Token not found' });
   }
   try {
-      verify(token, process.env.secretJWT);
-      return res.status(200).json('login confirmed');
+    const decodedUser = verify(token, process.env.NEXT_PUBLIC_SECRET_JWT);
+      return res.status(200).json(decodedUser);
   } catch (error) {
       return res.status(401).json({ error: 'Token not found' });
   }

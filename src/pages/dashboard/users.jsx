@@ -29,13 +29,11 @@ export default function Products() {
     const total = response?.total;
     const totalPages = total ? Math.ceil(total / limit) : 1;
 
-    const [newProduct, setNewProduct] = useState({ name: "", description: "", price: "", stock: "", image: null, categories: [] });
     const [editingProduct, setEditingProduct] = useState(null);
     const [openModal, setOpenModal] = useState(false);
 
     const handleEditProduct = (product) => {
         setEditingProduct(product);
-        setNewProduct(product);
         setOpenModal(true);
     };
 

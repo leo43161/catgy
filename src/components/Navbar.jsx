@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 /* import { logoutUser } from '@/store/features/authSlice'; */
 import { useRouter } from 'next/router';
 import Link from 'next/link';
@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
 export default function Navbar() {
+    
+
     const dispatch = useDispatch();
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false);
