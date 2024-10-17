@@ -1,72 +1,26 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+// src/features/productsSlice.js
+import { createSlice } from '@reduxjs/toolkit';
 
-// Acción asincrónica para registrar un usuario
-export const registerUser = createAsyncThunk(
-  'user/registerUser',
-  async (userData, { rejectWithValue }) => {
-    try {
-      const response = await axios.post('/api/users/register', userData);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
+const initialState = {
+  value: null,
+};
 
-// Acción asincrónica para iniciar sesión
-export const loginUser = createAsyncThunk(
-  'user/loginUser',
-  async (credentials, { rejectWithValue }) => {
-    try {
-      const response = await axios.post('/api/users/login', credentials);
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
-
-const userSlice = createSlice({
+const productsSlice = createSlice({
   name: 'user',
-  initialState: {
-    user: null,
-    loading: false,
-    error: null,
-  },
+  initialState,
   reducers: {
-    logout: (state) => {
-      state.user = null;
+    setProducts(state, action) {
+      state.value.items = action.payload; // Se accede correctamente a "items" dentro de "value"
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      .addCase(registerUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(registerUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
-      .addCase(registerUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      .addCase(loginUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      });
+    deleteProduct(state) {
+      state.value.items = {
+        user: "",
+        email: "",
+        phoneNumber: "",
+      };
+    },
   },
 });
 
-export const { logout } = userSlice.actions;
-export default userSlice.reducer;
+export const { setProducts, addProduct, updateProduct, deleteProduct } = productsSlice.actions;
+export default productsSlice.reducer;

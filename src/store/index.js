@@ -4,6 +4,7 @@ import { shopApi } from '@/services/shopApi';
 import { userApi } from '@/services/userApi';
 import productsReducer from '@/features/user/productsSlice';  // Asegúrate de que el path sea correcto
 import categoriesReducer from '@/features/user/categoriesSlice';  // Asegúrate de que el path sea correcto
+import usersReducer from '@/features/user/userSlice';  // Asegúrate de que el path sea correcto
 
 const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     products: productsReducer,    // Agregamos el reducer de productos
     categories: categoriesReducer, // Agregamos el reducer de categorías
+    users: usersReducer, // Agregamos el reducer de categorías
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(shopApi.middleware, userApi.middleware),
