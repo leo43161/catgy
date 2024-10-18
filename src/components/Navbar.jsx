@@ -1,24 +1,26 @@
 import { useDispatch, useSelector } from 'react-redux';
-/* import { logoutUser } from '@/store/features/authSlice'; */
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { clearUser } from '@/features/user/userSlice';
 
 export default function Navbar() {
-    
-
     const dispatch = useDispatch();
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false);
 
     const handleLogout = () => {
-        /* dispatch(logoutUser());
-        router.push('/auth/login'); */
+        // Elimina el token de las cookies si es necesario
+        document.cookie = 'token=; Max-Age=0; path=/;';
+        // Dispatch para manejar la acción de logout en el estado global
+        dispatch(clearUser());
+        // Redirigir a la página de login
+        router.push('/auth/login');
     };
 
     const toggleMenu = () => {
-        /* setMenuOpen(!menuOpen); */
+        setMenuOpen(!menuOpen);
     };
 
     return (
@@ -51,11 +53,11 @@ export default function Navbar() {
                     } md:flex`}
             >
                 <ul className="flex flex-col md:flex-row md:space-x-6">
-                    {/* <li>
-                        <Link className="text-gray-600 hover:text-gray-800" href="/dashboard">
+                    <li>
+                        <Link className="text-gray-600 hover:text-gray-800" href="/">
                             <p className='mb-0'>Inicio</p>
                         </Link>
-                    </li> */}
+                    </li>
                     <li>
                         <Link className="text-gray-600 hover:text-gray-800" href="/dashboard/products">
                             <p className='mb-0'>Productos</p>

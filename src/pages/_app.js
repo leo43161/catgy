@@ -1,11 +1,12 @@
-// pages/_app.js
-import { Provider } from 'react-redux';
+// pages/_app.js 
+import { Provider, useDispatch } from 'react-redux';
 import store from '@/store/index';
 import Layout from '@/components/Layout';
 import '../styles/globals.css';
 import Navbar from '@/components/Navbar';
 import { useEffect, useState } from 'react';
-import { loginVerify } from '@/helpers';
+import { verifyUserLogged } from '@/helpers/helpers';
+import { setUser } from '@/features/user/userSlice';
 
 function MyApp({ Component, pageProps }) {
     return (
@@ -16,21 +17,21 @@ function MyApp({ Component, pageProps }) {
 }
 
 function AppContent({ Component, pageProps }) {
+    const dispatch = useDispatch();
     const [logged, setLogged] = useState(false);
-    const [loggedReload, setLoggedReload] = useState(true);
 
-    /* Verifica si el usuario ya inició sesión */
     useEffect(() => {
-        if (loggedReload) {
-            checkLogged();
-            setLoggedReload(false);
-        }
-    }, [loggedReload]);
-
-    const checkLogged = async () => {
-        const isLogged = await loginVerify();
-        setLogged(isLogged);
-    };
+        const checkUser = async () => {
+            const userLogged = await verifyUserLogged();
+            if (userLogged) {
+                dispatch(setUser(userLogged));
+                setLogged(true);
+            } else {
+                setLogged(false);
+            }
+        };
+        checkUser();
+    }, [dispatch]);
 
     return (
         <Layout>
