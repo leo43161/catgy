@@ -37,7 +37,6 @@ function AppContent({ Component, pageProps }) {
         checkUser();
         // Ejecutar checkUser cada vez que cambie la ruta
         router.events.on('routeChangeComplete', checkUser);
-        
         // Limpiar el evento cuando se desmonte el componente
         return () => {
             router.events.off('routeChangeComplete', checkUser);
