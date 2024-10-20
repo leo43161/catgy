@@ -1,12 +1,13 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
-/* import { loginUser } from '@/store/features/authSlice'; */
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useLoginUserMutation } from '@/services/userApi';
 import { setUser } from '@/features/user/userSlice';
 
 export default function Login() {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginUser, { isLoading }] = useLoginUserMutation();
@@ -17,6 +18,7 @@ export default function Login() {
         try {
             const response = await loginUser({ email, password }).unwrap();
             dispatch(setUser(response));
+            router.push('/');
         } catch (error) {
             console.log(error);
         }
@@ -34,6 +36,7 @@ export default function Login() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Correo electrónico"
                     className="mb-4"
+                    name="email"
                 />
                 <Input
                     type="password"
@@ -41,6 +44,7 @@ export default function Login() {
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Contraseña"
                     className="mb-4"
+                    name="password"
                 />
                 <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? "Verificando..." : "Ingresar"}

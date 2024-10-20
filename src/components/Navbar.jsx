@@ -4,15 +4,22 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { clearUser } from '@/features/user/userSlice';
+import { useLogoutUserMutation } from '@/services/userApi';
 
 export default function Navbar() {
     const dispatch = useDispatch();
     const router = useRouter();
+    const [logoutUser, { isLoading }] = useLogoutUserMutation();
     const [menuOpen, setMenuOpen] = useState(false);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         // Elimina el token de las cookies si es necesario
-        document.cookie = 'token=; Max-Age=0; path=/;';
+        try {
+            const response = await logoutUser().unwrap();
+            dispatch(setUser(response));
+        } catch (error) {
+            console.log(error);
+        }
         // Dispatch para manejar la acción de logout en el estado global
         dispatch(clearUser());
         // Redirigir a la página de login
@@ -71,7 +78,7 @@ export default function Navbar() {
                 </ul>
                 <div className="mt-2 md:mt-0">
                     <Button onClick={handleLogout} className="bg-red-500 hover:bg-red-600">
-                        Cerrar Sesión
+                       {isLoading? "Cargando...": "Cerrar Sesión"}
                     </Button>
                 </div>
             </div>

@@ -6,7 +6,8 @@ import '../styles/globals.css';
 import Navbar from '@/components/Navbar';
 import { useEffect, useState } from 'react';
 import { verifyUserLogged } from '@/helpers/helpers';
-import { setUser } from '@/features/user/userSlice';
+import { setUser, clearUser } from '@/features/user/userSlice';
+import { useRouter } from 'next/router';
 
 function MyApp({ Component, pageProps }) {
     return (
@@ -18,20 +19,30 @@ function MyApp({ Component, pageProps }) {
 
 function AppContent({ Component, pageProps }) {
     const dispatch = useDispatch();
+    const router = useRouter();
     const [logged, setLogged] = useState(false);
 
+    const checkUser = async () => {
+        const userLogged = await verifyUserLogged();
+        if (userLogged) {
+            dispatch(setUser(userLogged));
+            setLogged(true);
+        } else {
+            dispatch(clearUser()); // Limpiar el usuario si no está logueado
+            setLogged(false);
+        }
+    };
+
     useEffect(() => {
-        const checkUser = async () => {
-            const userLogged = await verifyUserLogged();
-            if (userLogged) {
-                dispatch(setUser(userLogged));
-                setLogged(true);
-            } else {
-                setLogged(false);
-            }
-        };
         checkUser();
-    }, [dispatch]);
+        // Ejecutar checkUser cada vez que cambie la ruta
+        router.events.on('routeChangeComplete', checkUser);
+        
+        // Limpiar el evento cuando se desmonte el componente
+        return () => {
+            router.events.off('routeChangeComplete', checkUser);
+        };
+    }, [router]);
 
     return (
         <Layout>
