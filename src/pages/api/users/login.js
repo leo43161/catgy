@@ -46,13 +46,14 @@ const loginHandler = async (req, res) => {
       return res.status(400).json({ error: "Contraseña invalida" });
     }
 
-    const { name, role, phoneNumber, email } = user;
+    const { name, role, phoneNumber, email, _id } = user;
     const token = sign({
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
+      id: _id,
       usuario: name,
       email,
       phoneNumber,
       role,
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30,
     }, process.env.NEXT_PUBLIC_SECRET_JWT);
     const serialized = serialize('token', token, {
       httpOnly: true,

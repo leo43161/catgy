@@ -43,7 +43,7 @@ const ProductSchema = new mongoose.Schema({
     default: true,
   },
   createdBy: {
-    type: String,
+    type: mongoose.ObjectId,
     required: true,
   },
   createdAt: {

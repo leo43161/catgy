@@ -1,1 +1,0 @@
-export const realtime_database_url = 'https://catgy-415e7-default-rtdb.firebaseio.com/';

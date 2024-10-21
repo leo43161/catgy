@@ -15,6 +15,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useState } from "react";
 import { useGetCategoriesAllQuery } from "@/services/shopApi";
+import { useSelector } from "react-redux";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('El nombre es obligatorio'),
@@ -33,6 +34,7 @@ export const DialogProduct = ({
   setOpenModal,
 }) => {
   const { data: categoriesAll, isLoading } = useGetCategoriesAllQuery();
+  const user = useSelector(state => state.userReducer.value.user);
 
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -44,7 +46,7 @@ export const DialogProduct = ({
     categories: [],
     active: true,
     visible: true,
-    createdBy: "userID", // Placeholder: esto debe estar basado en el usuario actual autenticado
+    createdBy: "id", // Placeholder: esto debe estar basado en el usuario actual autenticado
   });
 
   const submitAddHandler = (values) => {
