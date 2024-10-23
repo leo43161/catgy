@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import { useState } from "react";
 import { useGetCategoriesAllQuery } from "@/services/shopApi";
 import { useSelector } from "react-redux";
+import { uploadImageToS3 } from "@/lib/s3";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('El nombre es obligatorio'),
@@ -50,8 +51,13 @@ export const DialogProduct = ({
   });
 
   const submitAddHandler = (values) => {
-    // Aquí va la lógica para guardar el producto en MongoDB o Firebase
-    /* console.log("Producto enviado: ", values); */
+    console.log(process);
+    console.log(process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID);
+    console.log(process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY);
+    console.log(process.env.NEXT_PUBLIC_AWS_REGION);
+    console.log(process.env.NEXT_PUBLIC_S3_BUCKET_NAME);
+    console.log("Producto enviado: ", values);
+    uploadImageToS3(values.image, "products");
   }
 
   return (
