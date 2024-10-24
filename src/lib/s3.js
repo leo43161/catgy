@@ -11,10 +11,12 @@ const s3Client = new S3Client({
 const bucketName = process.env.NEXT_PUBLIC_S3_BUCKET_NAME;
 
 export const uploadImageToS3 = async (file, type = "products") => {
+    const image = file.get("image");
+    const Body = await image.arrayBuffer();
     const params = {
         Bucket: bucketName,
         Key: `${type}/${Date.now()}-${file.name}`, // Define el path en S3
-        Body: await file.arrayBuffer(),
+        Body,
         ContentType: file.type
     };
     console.log(params)

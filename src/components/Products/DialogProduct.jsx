@@ -51,13 +51,10 @@ export const DialogProduct = ({
   });
 
   const submitAddHandler = (values) => {
-    console.log(process);
-    console.log(process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID);
-    console.log(process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY);
-    console.log(process.env.NEXT_PUBLIC_AWS_REGION);
-    console.log(process.env.NEXT_PUBLIC_S3_BUCKET_NAME);
     console.log("Producto enviado: ", values);
-    uploadImageToS3(values.image, "products");
+    const formDataFile = new FormData();
+    formDataFile.append("image", values.image);
+    uploadImageToS3(formDataFile, "products");
   }
 
   return (
