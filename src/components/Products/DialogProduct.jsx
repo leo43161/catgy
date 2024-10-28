@@ -14,9 +14,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useState } from "react";
-import { useGetCategoriesAllQuery } from "@/services/shopApi";
+import { useCreateProductMutation, useGetCategoriesAllQuery, useUploadImageMutation } from "@/services/shopApi";
 import { useSelector } from "react-redux";
-import { uploadImageToS3 } from "@/lib/s3";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('El nombre es obligatorio'),
@@ -37,6 +36,9 @@ export const DialogProduct = ({
   const { data: categoriesAll, isLoading } = useGetCategoriesAllQuery();
   const user = useSelector(state => state.userReducer.value.user);
 
+  const [uploadImage] = useUploadImageMutation(); // Hook para subir la imagen
+  const [createProduct] = useCreateProductMutation(); // Hook para crear producto
+
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
@@ -47,15 +49,43 @@ export const DialogProduct = ({
     categories: [],
     active: true,
     visible: true,
-    createdBy: "id", // Placeholder: esto debe estar basado en el usuario actual autenticado
+    createdBy: user ? user.id : "id", // Placeholder: esto debe estar basado en el usuario actual autenticado
   });
 
-  const submitAddHandler = (values) => {
-    console.log("Producto enviado: ", values);
-    const formDataFile = new FormData();
-    formDataFile.append("image", values.image);
-    uploadImageToS3(formDataFile, "products");
-  }
+  const submitAddHandler = async (values, { setSubmitting, resetForm }) => {
+    try {
+      console.log(values);
+      // Subir la imagen a S3 usando el hook
+      const formData = new FormData();
+      formData.append("image", values.image);
+      const uploadRes = await uploadImage(formData).unwrap();
+      console.log(uploadRes);
+      if (uploadRes.success) {
+        const imageUrl = uploadRes.imageUrl;
+        const newProductData = { ...values, image: imageUrl };
+
+        // Crear el producto utilizando Redux Toolkit
+        console.log(newProductData);
+        /* const productRes = await createProduct(newProductData).unwrap(); */
+
+        if (/* productRes.success */  true) {
+          alert("Producto agregado exitosamente");
+          resetForm();
+        } else {
+          console.error("Error al crear el producto:", productRes);
+          alert("No se pudo crear el producto");
+        }
+      } else {
+        console.error("Error al subir la imagen:", uploadRes);
+        alert("No se pudo subir la imagen");
+      }
+    } catch (error) {
+      console.error("Error en la creación del producto:", error);
+      alert("Ocurrió un error durante el proceso");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <Dialog open={showDialog} onOpenChange={setOpenModal}>
@@ -65,7 +95,7 @@ export const DialogProduct = ({
         </DialogHeader>
         <Formik
           initialValues={newProduct}
-          validationSchema={validationSchema}
+          /* validationSchema={validationSchema} */
           onSubmit={submitAddHandler}
         >
           {({ setFieldValue }) => (
