@@ -1,7 +1,7 @@
 // src/pages/api/upload.js
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import formidable from "formidable";
-import fs from "fs";
+import fs from "node:fs";
 
 export const config = {
     api: {
@@ -18,6 +18,7 @@ const s3Client = new S3Client({
 });
 
 const bucketName = process.env.NEXT_PUBLIC_S3_BUCKET_NAME;
+const url = process.env.NEXT_PUBLIC_S3_URL_IMG;
 
 const parseForm = (req) =>
     new Promise((resolve, reject) => {
@@ -33,21 +34,19 @@ export default async function handler(req, res) {
         try {
             const { files } = await parseForm(req);
             const image = files.image[0];
-            console.log(image);
-            //const Body = await image.arrayBuffer();
             if (image) {
+                const fileName = `${Date.now()}-${image.originalFilename}`;
                 const Body = fs.readFileSync(image.filepath); // Lee el archivo temporal
                 const params = {
                     Bucket: bucketName,
-                    Key: `products/${Date.now()}-${image.originalFilename}`,
+                    Key: `products/${fileName}`,
                     Body,
                     ContentType: image.mimetype,
                 };
-
                 try {
                     const command = new PutObjectCommand(params);
                     await s3Client.send(command);
-                    res.status(200).json({ success: true, message: "Image uploaded successfully" });
+                    res.status(200).json({ success: true, message: "Image uploaded successfully", url:`${url}products/${fileName}` });
                 } catch (error) {
                     console.error("Error uploading to S3:", error);
                     res.status(500).json({ success: false, message: "Failed to upload image" });

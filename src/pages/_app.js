@@ -24,6 +24,7 @@ function AppContent({ Component, pageProps }) {
 
     const checkUser = async () => {
         const userLogged = await verifyUserLogged();
+        console.log(userLogged);
         if (userLogged) {
             dispatch(setUser(userLogged));
             setLogged(true);

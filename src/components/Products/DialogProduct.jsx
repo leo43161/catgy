@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,9 +33,11 @@ export const DialogProduct = ({
   handleImageUpload,
   showDialog,
   setOpenModal,
+  onProductAdded
 }) => {
-  const { data: categoriesAll, isLoading } = useGetCategoriesAllQuery();
+  const { data: categoriesAll, isLoading, error } = useGetCategoriesAllQuery();
   const user = useSelector(state => state.userReducer.value.user);
+  console.log(user);
 
   const [uploadImage] = useUploadImageMutation(); // Hook para subir la imagen
   const [createProduct] = useCreateProductMutation(); // Hook para crear producto
@@ -42,14 +45,14 @@ export const DialogProduct = ({
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
-    price: "",
-    stock: "",
+    price: 0,
+    stock: 0,
     offer: 0,
     image: null, // imageURL: Aquí se manejará el URL después de la carga
     categories: [],
     active: true,
     visible: true,
-    createdBy: user ? user.id : "id", // Placeholder: esto debe estar basado en el usuario actual autenticado
+    createdBy: user ? new mongoose.Types.ObjectId(user.id) : null, // Placeholder: esto debe estar basado en el usuario actual autenticado
   });
 
   const submitAddHandler = async (values, { setSubmitting, resetForm }) => {
@@ -59,18 +62,27 @@ export const DialogProduct = ({
       const formData = new FormData();
       formData.append("image", values.image);
       const uploadRes = await uploadImage(formData).unwrap();
-      console.log(uploadRes);
       if (uploadRes.success) {
-        const imageUrl = uploadRes.imageUrl;
-        const newProductData = { ...values, image: imageUrl };
-
+        const imageUrl = uploadRes.url;
+        // Convertir cada categoría a ObjectId
+        const categoriesObjectIds = values.categories.map(
+          categoryId => new mongoose.Types.ObjectId(categoryId)
+        );
+        const newProductData = {
+          ...values,
+          image: imageUrl,
+          categoryIDs: categoriesObjectIds,
+          createdBy: user ? new mongoose.Types.ObjectId(user.id) : null
+        };
         // Crear el producto utilizando Redux Toolkit
         console.log(newProductData);
-        /* const productRes = await createProduct(newProductData).unwrap(); */
+        const productRes = await createProduct(newProductData).unwrap();
 
-        if (/* productRes.success */  true) {
+        if (productRes.success) {
           alert("Producto agregado exitosamente");
           resetForm();
+          setOpenModal(false);
+          onProductAdded();
         } else {
           console.error("Error al crear el producto:", productRes);
           alert("No se pudo crear el producto");

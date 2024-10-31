@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { DialogProduct } from "@/components/Products/DialogProduct";
@@ -12,7 +13,7 @@ export function Products() {
   const limit = 1;
   const offset = (currentPage - 1) * limit;
 
-  const { data: response, isLoading } = useGetProductsQuery({ limit, offset });
+  const { data: response, isLoading, error, refetch } = useGetProductsQuery({ limit, offset });
 
   const products = response?.products;
   const total = response?.total;
@@ -51,43 +52,45 @@ export function Products() {
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {products?.map((product) => (
-          <Card key={product._id} className="flex flex-col justify-between overflow-hidden">
-            <div>
-              {product.image && (
-                <img
-                  src={URL.createObjectURL(product.image)}
-                  alt={product.name}
-                  className="max-w-full h-auto"
-                />
-              )}
-            </div>
-            <CardHeader>
-              <div className="flex gap-3">
-                {product?.categoryIDs?.map((category, idx) => (
-                  <Badge key={idx}>{category.name}</Badge>
-                ))}
-              </div>
-              <CardTitle className="text-xl font-semibold">{product.name}</CardTitle>
-              <p className="text-sm text-muted-foreground">{product.description}</p>
-            </CardHeader>
-            <CardContent>
-              <p className="text-lg font-bold">${product.price}</p>
-              <p className="text-sm text-muted-foreground">Stock: {product.stock}</p>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <Button variant="outline" size="icon" onClick={() => handleEditProduct(product)}>
-                <Pencil className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="icon" onClick={() => handleView(product.id)}>
-                <Eye className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="icon" onClick={() => handleDeleteProduct(product.id)}>
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </CardFooter>
-          </Card>
-        ))}
+        {isLoading ? (<div>Cargando...</div>)
+          : error ? (<div>Error al cargar los productos</div>)
+            : products?.map((product) => (
+              <Card key={product._id} className="flex flex-col justify-between overflow-hidden">
+                <div>
+                  {product.image && (
+                    <img
+                      src={URL.createObjectURL(product.image)}
+                      alt={product.name}
+                      className="max-w-full h-auto"
+                    />
+                  )}
+                </div>
+                <CardHeader>
+                  <div className="flex gap-3">
+                    {product?.categoryIDs?.map((category, idx) => (
+                      <Badge key={idx}>{category.name}</Badge>
+                    ))}
+                  </div>
+                  <CardTitle className="text-xl font-semibold">{product.name}</CardTitle>
+                  <p className="text-sm text-muted-foreground">{product.description}</p>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg font-bold">${product.price}</p>
+                  <p className="text-sm text-muted-foreground">Stock: {product.stock}</p>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button variant="outline" size="icon" onClick={() => handleEditProduct(product)}>
+                    <Pencil className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={() => handleView(product.id)}>
+                    <Eye className="w-4 h-4" />
+                  </Button>
+                  <Button variant="outline" size="icon" onClick={() => handleDeleteProduct(product.id)}>
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
       </div>
 
       {/* Paginación */}
@@ -114,6 +117,7 @@ export function Products() {
         editingProduct={editingProduct}
         handleImageUpload={handleImageUpload}
         setOpenModal={setOpenModal}
+        onProductAdded={refetch}
       />
     </div>
   );
