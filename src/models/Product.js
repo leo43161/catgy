@@ -19,7 +19,7 @@ const ProductSchema = new mongoose.Schema({
       ref: 'categories',
     },
   ],
-  imageURL: {
+  imagen: {
     type: String,
     required: false,
   },

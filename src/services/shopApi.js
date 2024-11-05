@@ -22,6 +22,13 @@ export const shopApi = createApi({
         body: productData,
       }),
     }),
+    updateProduct: builder.mutation({
+      query: (productData) => ({
+        url: 'products',
+        method: 'PUT',
+        body: productData,
+      }),
+    }),
     uploadImage: builder.mutation({
       query: (formData) => ({
         url: '/upload',
@@ -37,5 +44,6 @@ export const {
   useGetCategoriesAllQuery,
   useGetProductsQuery,
   useCreateProductMutation,
-  useUploadImageMutation
+  useUploadImageMutation,
+  useUpdateProductMutation
 } = shopApi;

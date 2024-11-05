@@ -10,7 +10,7 @@ import { useGetProductsQuery } from "@/services/shopApi"; // Debes ajustar tu sh
 
 export function Products() {
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 1;
+  const limit = 2;
   const offset = (currentPage - 1) * limit;
 
   const { data: response, isLoading, error, refetch } = useGetProductsQuery({ limit, offset });
@@ -29,9 +29,10 @@ export function Products() {
   };
 
   const handleEditProduct = (product) => {
+    console.log(product);
     setEditingProduct(product);
-    setNewProduct(product);
     setOpenModal(true);
+    setNewProduct(product);
   };
 
   const handleDeleteProduct = (id) => {
@@ -114,6 +115,7 @@ export function Products() {
 
       <DialogProduct
         showDialog={openModal}
+        setEditingProduct={setEditingProduct}
         editingProduct={editingProduct}
         handleImageUpload={handleImageUpload}
         setOpenModal={setOpenModal}

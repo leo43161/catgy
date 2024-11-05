@@ -10,11 +10,11 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
       console.log('Attempting to create product...');
-      
+
       try {
         const createdProduct = await Product.create(req.body);
         console.log('Product created successfully:', createdProduct);
-    
+
         res.status(201).json({
           success: true,
           message: "Product created successfully",
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         });
       } catch (error) {
         console.error('Error creating product:', error);
-    
+
         // Verificar si el error es de validación
         if (error.name === 'ValidationError') {
           res.status(400).json({
@@ -52,6 +52,37 @@ export default async function handler(req, res) {
         .limit(parseInt(limit))
         .exec();
       res.json({ products: fetchedProducts, total: totalProducts });
+    } else if (req.method === 'PUT') {
+      console.log('Attempting to update product...');
+
+      try {
+        const createdProduct = await Product.findByIdAndUpdate(req.body.id, req.body);
+        console.log('Product updated successfully:', createdProduct);
+
+        res.status(201).json({
+          success: true,
+          message: "Product updated successfully",
+          createdProduct,
+        });
+      } catch (error) {
+        console.error('Error updated product:', error);
+
+        // Verificar si el error es de validación
+        if (error.name === 'ValidationError') {
+          res.status(400).json({
+            success: false,
+            message: "Validation failed. Check your input.",
+            errors: error.errors, // Detalle específico del error de validación
+          });
+        } else {
+          // Otros errores inesperados
+          res.status(500).json({
+            success: false,
+            message: "Failed to updated product due to a server error.",
+            error: error.message,
+          });
+        }
+      }
     } else {
       throw new Error(`Unsupported HTTP method: ${req.method}`);
     }

@@ -46,7 +46,7 @@ export default async function handler(req, res) {
                 try {
                     const command = new PutObjectCommand(params);
                     await s3Client.send(command);
-                    res.status(200).json({ success: true, message: "Image uploaded successfully", url:`${url}products/${fileName}` });
+                    res.status(200).json({ success: true, message: "Image uploaded successfully", name:`${fileName}` });
                 } catch (error) {
                     console.error("Error uploading to S3:", error);
                     res.status(500).json({ success: false, message: "Failed to upload image" });
