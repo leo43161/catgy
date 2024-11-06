@@ -1,8 +1,5 @@
-import mongoose from 'mongoose';
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -11,22 +8,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import { useState } from "react";
-import { useCreateProductMutation, useGetCategoriesAllQuery, useUploadImageMutation, useUpdateProductMutation } from "@/services/shopApi";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { validationSchemaProducts } from '@/helpers/yup';
+import { useCreateProductMutation, useGetCategoriesAllQuery, useUpdateProductMutation, useUploadImageMutation } from "@/services/shopApi";
+import { ErrorMessage, Field, Form, Formik } from 'formik';
+import mongoose from 'mongoose';
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required('El nombre es obligatorio'),
-  price: Yup.number().required('El precio es obligatorio').positive('El precio debe ser un número positivo'),
-  description: Yup.string(),
-  stock: Yup.number().required('El stock es obligatorio').integer('El stock debe ser un número entero').min(0, 'El stock no puede ser negativo'),
-  imagen: Yup.mixed().required("La imagen es obligatoria"),
-  offer: Yup.number().min(0, 'La oferta debe ser un número positivo o cero'),
-  categories: Yup.array().min(1, 'Debes seleccionar al menos una categoría'),
-});
 
 export const DialogProduct = ({
   editingProduct,
@@ -37,12 +28,17 @@ export const DialogProduct = ({
   onProductAdded
 }) => {
   const { data: categoriesAll, isLoading, error } = useGetCategoriesAllQuery();
+  console.log(categoriesAll);
   const user = useSelector(state => state.userReducer.value.user);
 
   const [uploadImage] = useUploadImageMutation();
   const [createProduct] = useCreateProductMutation();
   const [updateProduct] = useUpdateProductMutation();
 
+  // Estado para manejar las categorías seleccionadas
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  //Aplica los valores iniciales en caso de edición o creación de un producto
   const initialValues = editingProduct
     ? {
       name: editingProduct.name,
@@ -69,11 +65,17 @@ export const DialogProduct = ({
       createdBy: user ? new mongoose.Types.ObjectId(user.id) : null,
     };
 
+  useEffect(() => {
+    if (editingProduct) {
+      setSelectedCategories(initialValues.categories);
+    }
+  }, [editingProduct]);
+
   const submitHandler = async (values, { setSubmitting, resetForm }) => {
     try {
       let imageUrl = values.imagen;
       //Verifica si existe una imagen para subir
-      /* if (values.imagen instanceof File) {
+      if (values.imagen instanceof File) {
         const formData = new FormData();
         formData.append("image", values.imagen);
         const uploadRes = await uploadImage(formData).unwrap();
@@ -82,19 +84,17 @@ export const DialogProduct = ({
         } else {
           throw new Error("No se pudo subir la imagen");
         }
-      } */
+      }
       //Formatea las categorias
-      const categoriesObjectIds = values.categories.map(categoryId => new mongoose.Types.ObjectId(categoryId));
+      const categoriesObjectIds = selectedCategories.map(categoryId => new mongoose.Types.ObjectId(categoryId));
       //Preparar los datos
       const productData = {
         ...values,
         imagen: imageUrl,
         categoryIDs: categoriesObjectIds,
         createdBy: user ? new mongoose.Types.ObjectId(user.id) : null,
-        id: editingProduct._id
+        id: !!editingProduct && editingProduct._id
       };
-      /* console.log(productData);
-      return; */
       //Envia la peticion
       let response;
       if (editingProduct) {
@@ -136,7 +136,7 @@ export const DialogProduct = ({
         </DialogHeader>
         <Formik
           initialValues={initialValues}
-          validationSchema={validationSchema}
+          validationSchema={validationSchemaProducts}
           onSubmit={submitHandler}
           enableReinitialize // Habilitar reinicialización para cargar valores al editar
         >
@@ -182,16 +182,18 @@ export const DialogProduct = ({
                     <DropdownMenuContent className="w-full">
                       <DropdownMenuLabel>Categorías</DropdownMenuLabel>
                       <DropdownMenuSeparator />
+                      {/* Aqui anda mal, si me agrega las categorias que selecciona pero en el renderizado no me aparece renderizado el tilde que indica que la seleccione, aunque si se agregue en el array y se agrega en la Base de datos */}
                       {!isLoading && categoriesAll?.map((category, idx) => (
                         <DropdownMenuCheckboxItem
                           key={idx}
-                          checked={initialValues.categories.includes(category._id)}
+                          checked={selectedCategories.includes(category._id)}
                           onCheckedChange={(checked) => {
                             //Se prepara para cargar las categorias en el producto que se vas a subir
                             const updatedCategories = checked
-                              ? [...initialValues.categories, category._id]
-                              : initialValues.categories.filter((id) => id !== category._id);
+                              ? [...selectedCategories, category._id]
+                              : selectedCategories.filter((id) => id !== category._id);
                             //Se sube en el formulario y en el producto a cargar
+                            setSelectedCategories(updatedCategories);
                             setFieldValue("categories", updatedCategories);
                           }}
                         >
