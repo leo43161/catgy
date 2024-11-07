@@ -29,10 +29,6 @@ export function Products() {
     setNewProduct(product);
   };
 
-  const handleDeleteProduct = (id) => {
-    // Lógica para eliminar producto
-  };
-
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -62,7 +58,7 @@ export function Products() {
               <CardProduct
                 product={product}
                 handleEditProduct={handleEditProduct}
-                handleDeleteProduct={handleDeleteProduct}
+                onProductAdded={refetch}
               />
             ))}
       </div>

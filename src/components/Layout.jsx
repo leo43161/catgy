@@ -1,6 +1,6 @@
 import { Roboto } from "next/font/google";
 import Head from 'next/head'
-import Navbar from "./Navbar";
+import { Toaster } from "@/components/ui/toaster"
 
 const roboto = Roboto({
   weight: '400',
@@ -14,6 +14,7 @@ export default function Layout({ children }) {
         <title>My page title</title>
       </Head>
       <main>{children}</main>
+      <Toaster />
     </div>
   )
 }

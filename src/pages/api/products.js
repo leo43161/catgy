@@ -46,7 +46,7 @@ export default async function handler(req, res) {
       const { limit, offset, search } = req.query;
 
       // Crear el objeto de búsqueda
-      const query = search ? { name: { $regex: search, $options: 'i' } } : {}; // 'i' hace que la búsqueda sea insensible a mayúsculas
+      const query = search ? { name: { $regex: search, $options: 'i' }, active: true } : { active: true }; // 'i' hace que la búsqueda sea insensible a mayúsculas
 
       // Contar el número total de productos que coinciden con la búsqueda para calcular el total de páginas
       const totalProducts = await Product.countDocuments(query);
@@ -60,7 +60,17 @@ export default async function handler(req, res) {
 
       res.json({ products: fetchedProducts, total: totalProducts });
     } else if (req.method === 'PUT') {
-      console.log('Attempting to update product...');
+      const { state, id, value } = req.params;
+      if (state && id) {
+        const updatedProduct = await Product.findByIdAndUpdate(id, { $set: { [state]: value } });
+        res.json(updatedProduct);
+        res.status(201).json({
+          success: true,
+          message: "Product updated successfully",
+          createdProduct,
+        });
+        return;
+      }
 
       try {
         const createdProduct = await Product.findByIdAndUpdate(req.body.id, req.body);

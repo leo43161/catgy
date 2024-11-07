@@ -17,6 +17,9 @@ import { ErrorMessage, Field, Form, Formik } from 'formik';
 import mongoose from 'mongoose';
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { Checkbox } from "@/components/ui/checkbox"
+import { useToast } from "@/hooks/use-toast"
+
 
 
 export const DialogProduct = ({
@@ -27,8 +30,8 @@ export const DialogProduct = ({
   onProductAdded
 }) => {
   const { data: categoriesAll, isLoading, error } = useGetCategoriesAllQuery();
-  console.log(categoriesAll);
   const user = useSelector(state => state.userReducer.value.user);
+  const { toast } = useToast()
 
   const [uploadImage] = useUploadImageMutation();
   const [createProduct] = useCreateProductMutation();
@@ -65,6 +68,7 @@ export const DialogProduct = ({
     };
 
   useEffect(() => {
+    console.log(editingProduct);
     if (editingProduct) {
       setSelectedCategories(initialValues.categories);
     }
@@ -90,6 +94,7 @@ export const DialogProduct = ({
   const submitHandler = async (values, { setSubmitting, resetForm }) => {
     try {
       let imageUrl = values.imagen;
+      console.log(values)
       //Verifica si existe una imagen para subir
       if (values.imagen instanceof File) {
         const formData = new FormData();
@@ -120,17 +125,29 @@ export const DialogProduct = ({
       }
       //Respuesta
       if (response.success) {
-        alert(`Producto ${editingProduct ? "actualizado" : "agregado"} exitosamente`);
+        toast({
+          title: `Producto ${editingProduct ? "actualizado" : "agregado"} exitosamente`,
+          description: `${values.name} fue ${editingProduct ? "actualizado" : "agregado"} exitosamente`,
+        })
         onProductAdded();
         resetForm();
         setOpenModal(false);
         setEditingProduct(false);
       } else {
+        toast({
+          variant: "destructive",
+          title: `Error al ${editingProduct ? "actualizar" : "agregar"} el producto`,
+          description: `No se pudo ${editingProduct ? "actualizar" : "agregar"} el producto`,
+        })
         throw new Error("No se pudo procesar la solicitud");
       }
     } catch (error) {
       console.error("Error en el proceso del producto:", error);
-      alert("Ocurrió un error durante el proceso");
+      toast({
+        variant: "destructive",
+        title: `Error al ${editingProduct ? "actualizar" : "agregar"} el producto`,
+        description: `No se pudo ${editingProduct ? "actualizar" : "agregar"} el producto`,
+      })
     } finally {
       setSubmitting(false);
     }
@@ -156,58 +173,119 @@ export const DialogProduct = ({
           onSubmit={submitHandler}
           enableReinitialize // Habilitar reinicialización para cargar valores al editar
         >
-          {({ setFieldValue }) => (
-            <Form>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="name" className="text-right">Nombre</Label>
-                  <Field id="name" name="name" as={Input} className="col-span-3" />
-                  <ErrorMessage name="name" component="div" className="text-red-500" />
+          {({ setFieldValue, values }) => (
+            <Form className="mt-3">
+              <div className="">
+                {/* Visibilidad */}
+                <div className="flex items-center mb-3">
+                  <Checkbox
+                    name="visible"
+                    id="visible"
+                    className="mr-2"
+                    defaultChecked={initialValues.visible}
+                    onClick={(e) => setFieldValue("visible", !(e.target.ariaChecked === "true"))}
+                  />
+                  <Label htmlFor="visible" className="font-medium">Producto visible</Label>
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="description" className="text-right">Descripción</Label>
-                  <Field id="description" name="description" as={Textarea} className="col-span-3" />
+
+                {/* Nombre del producto */}
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="name" className="font-medium mb-2">Nombre</Label>
+                  <Field
+                    id="name"
+                    name="name"
+                    as={Input}
+                    placeholder="Ingrese el nombre del producto"
+                    className="mt-1"
+                  />
+                  <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="price" className="text-right">Precio</Label>
-                  <Field id="price" name="price" type="number" as={Input} className="col-span-3" />
-                  <ErrorMessage name="price" component="div" className="text-red-500" />
+
+                {/* Descripción */}
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="description" className="font-medium mb-2">Descripción</Label>
+                  <Field
+                    id="description"
+                    name="description"
+                    as={Textarea}
+                    placeholder="Descripción del producto"
+                    className="mt-1"
+                  />
+                  <ErrorMessage name="description" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="stock" className="text-right">Stock</Label>
-                  <Field id="stock" name="stock" type="number" as={Input} className="col-span-3" />
-                  <ErrorMessage name="stock" component="div" className="text-red-500" />
+
+                {/* Precio */}
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="price" className="font-medium mb-2">Precio</Label>
+                  <Field
+                    id="price"
+                    name="price"
+                    type="number"
+                    as={Input}
+                    placeholder="Ej: 1500"
+                    className="mt-1"
+                  />
+                  <ErrorMessage name="price" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="offer" className="text-right">Oferta</Label>
-                  <Field id="offer" name="offer" type="number" as={Input} className="col-span-3" />
+
+                {/* Stock */}
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="stock" className="font-medium mb-2">Stock</Label>
+                  <Field
+                    id="stock"
+                    name="stock"
+                    type="number"
+                    as={Input}
+                    placeholder="Ej: 20"
+                    className="mt-1"
+                  />
+                  <ErrorMessage name="stock" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="imagen" className="text-right">Imagen</Label>
-                  <Input id="imagen" name="imagen" type="file" onChange={(e) => {
-                    setFieldValue("imagen", e.currentTarget.files[0]);
-                  }} className="col-span-3" />
+
+                {/* Oferta */}
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="offer" className="font-medium mb-2">Oferta</Label>
+                  <Field
+                    id="offer"
+                    name="offer"
+                    type="number"
+                    as={Input}
+                    placeholder="Descuento en %"
+                    className="mt-1"
+                  />
+                  <ErrorMessage name="offer" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="categories" className="text-right">Categorías</Label>
+
+                {/* Imagen */}
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="imagen" className="font-medium mb-2">Imagen</Label>
+                  <Input
+                    id="imagen"
+                    name="imagen"
+                    type="file"
+                    onChange={(e) => setFieldValue("imagen", e.currentTarget.files[0])}
+                    className="mt-1"
+                  />
+                </div>
+
+                {/* Categorías */}
+                <div className="flex flex-col mb-3">
+                  <Label htmlFor="categories" className="font-medium mb-2">Categorías</Label>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button className="col-span-3" variant="outline">Seleccionar categoría</Button>
+                      <Button className="w-full mt-1" variant="outline">Seleccionar categoría</Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-full">
                       <DropdownMenuLabel>Categorías</DropdownMenuLabel>
                       <DropdownMenuSeparator />
-                      {/* Aqui anda mal, si me agrega las categorias que selecciona pero en el renderizado no me aparece renderizado el tilde que indica que la seleccione, aunque si se agregue en el array y se agrega en la Base de datos */}
                       {!isLoading && categoriesAll?.map((category, idx) => (
                         <DropdownMenuCheckboxItem
                           key={idx}
                           checked={selectedCategories.includes(category._id)}
                           onCheckedChange={(checked) => {
-                            //Se prepara para cargar las categorias en el producto que se vas a subir
                             const updatedCategories = checked
                               ? [...selectedCategories, category._id]
                               : selectedCategories.filter((id) => id !== category._id);
-                            //Se sube en el formulario y en el producto a cargar
                             setSelectedCategories(updatedCategories);
                             setFieldValue("categories", updatedCategories);
                           }}
@@ -217,16 +295,22 @@ export const DialogProduct = ({
                       ))}
                     </DropdownMenuContent>
                   </DropdownMenu>
-                  <ErrorMessage name="categories" component="div" className="text-red-500" />
+                  <ErrorMessage name="categories" component="div" className="text-red-500 text-sm mt-1" />
                 </div>
-              </div>
-              <div className="flex justify-between">
-                <Button type="submit">
-                  {editingProduct ? "Actualizar Producto" : "Agregar Producto"}
-                </Button>
-                <Button type="button" variant="outline" onClick={() => setOpenModal(false)}>
-                  Cerrar
-                </Button>
+
+                {/* Botones */}
+                <div className="flex justify-between pt-4 space-x-4">
+                  <Button type="submit" className="">
+                    {editingProduct ? "Actualizar Producto" : "Agregar Producto"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setOpenModal(false)}
+                  >
+                    Cerrar
+                  </Button>
+                </div>
               </div>
             </Form>
           )}
