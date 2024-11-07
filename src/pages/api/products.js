@@ -41,16 +41,23 @@ export default async function handler(req, res) {
       }
     } else if (req.method === 'GET') {
       console.log('FETCHING DOCUMENTS');
-      // Obtener el limit y el offset desde las query params
-      const { limit, offset } = req.query;
-      // Contar el número total de productos para calcular el total de páginas
-      const totalProducts = await Product.countDocuments();
-      // Obtener los productos con paginación
-      const fetchedProducts = await Product.find({})
+
+      // Obtener el limit, offset y el término de búsqueda desde las query params
+      const { limit, offset, search } = req.query;
+
+      // Crear el objeto de búsqueda
+      const query = search ? { name: { $regex: search, $options: 'i' } } : {}; // 'i' hace que la búsqueda sea insensible a mayúsculas
+
+      // Contar el número total de productos que coinciden con la búsqueda para calcular el total de páginas
+      const totalProducts = await Product.countDocuments(query);
+
+      // Obtener los productos que coinciden con la búsqueda con paginación
+      const fetchedProducts = await Product.find(query)
         .populate('categoryIDs', "name")
         .skip(parseInt(offset))
         .limit(parseInt(limit))
         .exec();
+
       res.json({ products: fetchedProducts, total: totalProducts });
     } else if (req.method === 'PUT') {
       console.log('Attempting to update product...');

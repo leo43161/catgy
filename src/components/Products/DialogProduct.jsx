@@ -21,7 +21,6 @@ import { useSelector } from "react-redux";
 
 export const DialogProduct = ({
   editingProduct,
-  handleImageUpload,
   showDialog,
   setOpenModal,
   setEditingProduct,
@@ -70,6 +69,23 @@ export const DialogProduct = ({
       setSelectedCategories(initialValues.categories);
     }
   }, [editingProduct]);
+
+  const handleBackButton = () => {
+    if (showDialog) {
+      setOpenModal(false); // Cierra el diálogo si está abierto
+      window.history.pushState(null, ''); // Añade una nueva entrada al historial para "cancelar" la navegación
+    }
+  };
+
+  useEffect(() => {
+    if (showDialog) {
+      window.history.pushState(null, ''); // Añade una entrada al historial para manejar el botón de "Atrás"
+      window.addEventListener('popstate', handleBackButton);
+    }
+    return () => {
+      window.removeEventListener('popstate', handleBackButton);
+    };
+  }, [showDialog]);
 
   const submitHandler = async (values, { setSubmitting, resetForm }) => {
     try {
@@ -169,7 +185,6 @@ export const DialogProduct = ({
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Label htmlFor="imagen" className="text-right">Imagen</Label>
                   <Input id="imagen" name="imagen" type="file" onChange={(e) => {
-                    handleImageUpload(e); // Función para cargar la imagen
                     setFieldValue("imagen", e.currentTarget.files[0]);
                   }} className="col-span-3" />
                 </div>
@@ -205,9 +220,14 @@ export const DialogProduct = ({
                   <ErrorMessage name="categories" component="div" className="text-red-500" />
                 </div>
               </div>
-              <Button type="submit">
-                {editingProduct ? "Actualizar Producto" : "Agregar Producto"}
-              </Button>
+              <div className="flex justify-between">
+                <Button type="submit">
+                  {editingProduct ? "Actualizar Producto" : "Agregar Producto"}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setOpenModal(false)}>
+                  Cerrar
+                </Button>
+              </div>
             </Form>
           )}
         </Formik>

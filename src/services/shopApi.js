@@ -6,13 +6,19 @@ export const shopApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
   endpoints: (builder) => ({
     getCategories: builder.query({
-      query: ({ limit, offset }) => `categories?limit=${limit}&offset=${offset}`,
+      query: ({ limit, offset }) => ({
+        url: `/categories`,
+        params: { limit, offset },
+      }),
     }),
     getCategoriesAll: builder.query({
       query: () => 'categories?type=all',
     }),
     getProducts: builder.query({
-      query: ({ limit, offset }) => `products?limit=${limit}&offset=${offset}`,
+      query: ({ limit, offset, search }) => ({
+        url: `/products`,
+        params: { limit, offset, search },
+      }),
     }),
     // Endpoint para crear un nuevo producto
     createProduct: builder.mutation({

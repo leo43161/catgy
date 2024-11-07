@@ -9,10 +9,11 @@ import CardProduct from "./CardProduct";
 
 export function Products() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState(""); // Estado para la búsqueda
   const limit = 6;
   const offset = (currentPage - 1) * limit;
 
-  const { data: response, isLoading, error, refetch } = useGetProductsQuery({ limit, offset });
+  const { data: response, isLoading, error, refetch } = useGetProductsQuery({ limit, offset, search });
 
   const products = response?.products;
   const total = response?.total;
@@ -22,13 +23,7 @@ export function Products() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [openModal, setOpenModal] = useState(false);
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    setNewProduct({ ...newProduct, image: file });
-  };
-
   const handleEditProduct = (product) => {
-    console.log(product);
     setEditingProduct(product);
     setOpenModal(true);
     setNewProduct(product);
@@ -42,6 +37,12 @@ export function Products() {
     setCurrentPage(page);
   };
 
+  const handleSearch = (value) => {
+    setSearch(value);
+    setCurrentPage(1); // Reinicia la paginación al cambiar la búsqueda
+    refetch(); // Refresca los productos
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6 flex-col md:flex-row">
@@ -52,7 +53,7 @@ export function Products() {
         </Button>
       </div>
       <div className="mb-4">
-        <SearchBar></SearchBar>
+        <SearchBar onSearch={handleSearch} />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-4">
         {isLoading ? (<div>Cargando...</div>)
@@ -89,7 +90,6 @@ export function Products() {
         showDialog={openModal}
         setEditingProduct={setEditingProduct}
         editingProduct={editingProduct}
-        handleImageUpload={handleImageUpload}
         setOpenModal={setOpenModal}
         onProductAdded={refetch}
       />
