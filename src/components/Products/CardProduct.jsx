@@ -10,7 +10,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useUpdateProductMutation } from "@/services/shopApi";
+import { useUpdateProductStateMutation } from "@/services/shopApi";
 import { useToast } from "@/hooks/use-toast"
 import { Eye, Pencil, Trash2, EyeClosed } from "lucide-react";
 import { useState } from "react";
@@ -18,12 +18,10 @@ import { useState } from "react";
 export default function CardProduct({ product, handleEditProduct, onProductAdded }) {
     const [openModal, setOpenModal] = useState(false);
     const [stateUpdate, setStateUpdate] = useState(null);
-    const [updateProduct] = useUpdateProductMutation();
+    const [updateStateProduct] = useUpdateProductStateMutation();
     const URLImage = process.env.NEXT_PUBLIC_S3_URL_IMG;
     const { toast } = useToast()
     const handleModalState = async (state) => {
-        console.log("state");
-        console.log(state);
         const productData = {
             ...product,
             [state]: !product[state],
@@ -34,19 +32,15 @@ export default function CardProduct({ product, handleEditProduct, onProductAdded
     }
     const handleStateProduct = async (state) => {
         try {
-            const productData = {
-                ...product,
-                [state]: !product[state],
-            };
-            console.log(productData);
-            const response = await updateProduct(productData).unwrap();
+            await updateStateProduct({ state, id: product._id, value: !product[state] }).unwrap();
             onProductAdded();
-            console.log(response);
             toast({
                 title: `Producto ${stateUpdate === "active" ? "eliminado" : product[state] ? "desactivado" : "activado"} exitosamente`,
                 description: `${product.name} fue ${stateUpdate === "active" ? "eliminado" : product[state] ? "desactivado" : "activado"} exitosamente`,
+                className: 'bg-primary text-primary-foreground border-primary-foreground',
             })
         } catch (error) {
+            console.log(error)
             toast({
                 variant: "destructive",
                 title: `Error al ${stateUpdate === "active" ? "eliminado" : product[state] ? "desactivado" : "activado"} el producto`,

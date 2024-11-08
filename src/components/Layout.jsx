@@ -14,7 +14,7 @@ export default function Layout({ children }) {
         <title>My page title</title>
       </Head>
       <main>{children}</main>
-      <Toaster />
+      <Toaster className="bg-primary" />
     </div>
   )
 }

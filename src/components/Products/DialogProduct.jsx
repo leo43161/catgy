@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Checkbox } from "@/components/ui/checkbox"
 import { useToast } from "@/hooks/use-toast"
+import { compressImage } from "@/helpers/helpers";
 
 
 
@@ -97,8 +98,9 @@ export const DialogProduct = ({
       console.log(values)
       //Verifica si existe una imagen para subir
       if (values.imagen instanceof File) {
+        const imageCompress = compressImage(values.imagen);
         const formData = new FormData();
-        formData.append("image", values.imagen);
+        formData.append("image", imageCompress);
         const uploadRes = await uploadImage(formData).unwrap();
         if (uploadRes.success) {
           imageUrl = uploadRes.name;
@@ -128,6 +130,7 @@ export const DialogProduct = ({
         toast({
           title: `Producto ${editingProduct ? "actualizado" : "agregado"} exitosamente`,
           description: `${values.name} fue ${editingProduct ? "actualizado" : "agregado"} exitosamente`,
+          className: 'bg-primary text-primary-foreground border-primary-foreground',
         })
         onProductAdded();
         resetForm();
@@ -265,6 +268,7 @@ export const DialogProduct = ({
                     type="file"
                     onChange={(e) => setFieldValue("imagen", e.currentTarget.files[0])}
                     className="mt-1"
+                    accept="image/*"
                   />
                 </div>
 

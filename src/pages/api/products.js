@@ -10,11 +10,8 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
       console.log('Attempting to create product...');
-
       try {
         const createdProduct = await Product.create(req.body);
-        console.log('Product created successfully:', createdProduct);
-
         res.status(201).json({
           success: true,
           message: "Product created successfully",
@@ -60,14 +57,14 @@ export default async function handler(req, res) {
 
       res.json({ products: fetchedProducts, total: totalProducts });
     } else if (req.method === 'PUT') {
-      const { state, id, value } = req.params;
-      if (state && id) {
+      const { state, id, value } = req.query;
+      if (state && id && value) {
         const updatedProduct = await Product.findByIdAndUpdate(id, { $set: { [state]: value } });
         res.json(updatedProduct);
         res.status(201).json({
           success: true,
           message: "Product updated successfully",
-          createdProduct,
+          updatedProduct,
         });
         return;
       }
