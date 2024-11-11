@@ -6,9 +6,9 @@ export const shopApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
   endpoints: (builder) => ({
     getCategories: builder.query({
-      query: ({ limit, offset }) => ({
+      query: ({ limit, offset, search }) => ({
         url: `/categories`,
-        params: { limit, offset },
+        params: { limit, offset, search },
       }),
     }),
     getCategoriesAll: builder.query({

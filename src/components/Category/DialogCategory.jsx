@@ -3,14 +3,16 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
-export const DialogCategory = ({ children, handleCategories, editingCategory }) => {
-    const { newCategory, handleInputChange, handleAddCategory, handleUpdateCategory } = handleCategories
+export const DialogCategory = ({
+    showDialog,
+    setEditingCategory,
+    editingCategory,
+    setOpenModal,
+    onProductAdded
+}) => {
 
     return (
         <Dialog>
-            <DialogTrigger asChild>
-                {children}
-            </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{editingCategory ? "Editar Categoría" : "Agregar Nueva Categoría"}</DialogTitle>

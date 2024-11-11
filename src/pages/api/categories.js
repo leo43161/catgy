@@ -9,23 +9,48 @@ export default async function handler(req, res) {
 
     if (req.method === 'POST') {
       console.log('CREATING DOCUMENT');
-      const createdUser = await Category.create(req.body);
-      console.log('CREATED DOCUMENT');
-      res.json({ createdUser });
+      try {
+        const createdCategory = await Category.create(req.body);
+        res.status(201).json({
+          success: true,
+          message: "Category created successfully",
+          createdCategory,
+        });
+      } catch (error) {
+        console.error('Error creating product:', error);
+        // Verificar si el error es de validación
+        if (error.name === 'ValidationError') {
+          res.status(400).json({
+            success: false,
+            message: "Validation failed. Check your input.",
+            errors: error.errors, // Detalle específico del error de validación
+          });
+        } else {
+          // Otros errores inesperados
+          res.status(500).json({
+            success: false,
+            message: "Failed to create product due to a server error.",
+            error: error.message,
+          });
+        }
+      }
     } else if (req.method === 'GET') {
       console.log('FETCHING DOCUMENTS');
       // Obtener el limit y el offset desde las query params
-      const { limit, offset, type } = req.query;
+      const { limit, offset, type, search } = req.query;
+
+      // Crear el objeto de búsqueda
+      const query = search ? { name: { $regex: search, $options: 'i' }, active: true } : { active: true }; // 'i' hace que la búsqueda sea insensible a mayúsculas
       if (type !== "all") {
         // Contar el número total de productos para calcular el total de páginas
-        const totalCategories = await Category.countDocuments();
+        const totalCategories = await Category.countDocuments(query);
 
-        const fetchedCategories = await Category.find({})
+        const fetchedCategories = await Category.find(query)
           .skip(parseInt(offset))
           .limit(parseInt(limit))
           .exec();
         console.log('FETCHED DOCUMENTS');
-        res.json({ fetchedCategories, total: totalCategories });
+        res.json({ categories: fetchedCategories, total: totalCategories });
       } else {
         const fetchedCategories = await Category.find({});
         res.json(fetchedCategories);
