@@ -98,7 +98,8 @@ export const DialogProduct = ({
       console.log(values)
       //Verifica si existe una imagen para subir
       if (values.imagen instanceof File) {
-        const imageCompress = compressImage(values.imagen);
+        console.log(values.imagen)
+        const imageCompress = await compressImage(values.imagen);
         const formData = new FormData();
         formData.append("image", imageCompress);
         const uploadRes = await uploadImage(formData).unwrap();
