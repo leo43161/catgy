@@ -55,6 +55,47 @@ export default async function handler(req, res) {
         const fetchedCategories = await Category.find({});
         res.json(fetchedCategories);
       }
+    } else if (req.method === 'PUT') {
+      const { state, id, value } = req.query;
+      if (state && id && value) {
+        const updatedCategory = await Category.findByIdAndUpdate(id, { $set: { [state]: value } });
+        res.json(updatedCategory);
+        res.status(201).json({
+          success: true,
+          message: "Category updated successfully",
+          updatedCategory,
+        });
+        return;
+      }
+
+      try {
+        const createdCategory = await Category.findByIdAndUpdate(req.body.id, req.body);
+        console.log('Category updated successfully:', createdCategory);
+
+        res.status(201).json({
+          success: true,
+          message: "Category updated successfully",
+          createdCategory,
+        });
+      } catch (error) {
+        console.error('Error updated product:', error);
+
+        // Verificar si el error es de validación
+        if (error.name === 'ValidationError') {
+          res.status(400).json({
+            success: false,
+            message: "Validation failed. Check your input.",
+            errors: error.errors, // Detalle específico del error de validación
+          });
+        } else {
+          // Otros errores inesperados
+          res.status(500).json({
+            success: false,
+            message: "Failed to updated product due to a server error.",
+            error: error.message,
+          });
+        }
+      }
     } else {
       throw new Error(`Unsupported HTTP method: ${req.method}`);
     }

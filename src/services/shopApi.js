@@ -20,7 +20,7 @@ export const shopApi = createApi({
         params: { limit, offset, search },
       }),
     }),
-    // Endpoint para crear un nuevo producto
+    // Endpoint para productos
     createProduct: builder.mutation({
       query: (productData) => ({
         url: 'products',
@@ -42,6 +42,29 @@ export const shopApi = createApi({
         params
       }),
     }),
+    // Endpoint para categories
+    createCategory: builder.mutation({
+      query: (categoryData) => ({
+        url: 'categories',
+        method: 'POST',
+        body: categoryData,
+      }),
+    }),
+    updateCategory: builder.mutation({
+      query: (categoryData) => ({
+        url: 'categories',
+        method: 'PUT',
+        body: categoryData,
+      }),
+    }),
+    updateCategoryState: builder.mutation({
+      query: (params) => ({
+        url: 'categories',
+        method: 'PUT',
+        params
+      }),
+    }),
+    //Endpoint Upload
     uploadImage: builder.mutation({
       query: (formData) => ({
         url: '/upload',
@@ -53,11 +76,17 @@ export const shopApi = createApi({
 });
 
 export const {
+  //PRODUCTS
+  useGetProductsQuery,
+  useUpdateProductMutation,
+  useCreateProductMutation,
+  useUpdateProductStateMutation,
+  //CATEGORIES
   useGetCategoriesQuery,
   useGetCategoriesAllQuery,
-  useGetProductsQuery,
-  useCreateProductMutation,
+  useCreateCategoryMutation,
+  useUpdateCategoryMutation,
+  useUpdateCategoryStateMutation,
+  //UPLOADS
   useUploadImageMutation,
-  useUpdateProductMutation,
-  useUpdateProductStateMutation
 } = shopApi;

@@ -1,6 +1,7 @@
 import { Roboto } from "next/font/google";
 import Head from 'next/head'
 import { Toaster } from "@/components/ui/toaster"
+import { ThemeProvider } from "./theme-provider";
 
 const roboto = Roboto({
   weight: '400',
@@ -11,10 +12,17 @@ export default function Layout({ children }) {
   return (
     <div className={[roboto.className, 'bg-gray-100', 'bg-blend-darken']}>
       <Head>
-        <title>My page title</title>
+        <title>Catgy</title>
       </Head>
-      <main>{children}</main>
-      <Toaster className="bg-primary" />
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <main>{children}</main>
+        <Toaster className="bg-primary" />
+      </ThemeProvider>
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 import { clearUser } from '@/features/user/userSlice';
 import { useLogoutUserMutation } from '@/services/userApi';
+import { ButtonTheme } from './ButtonTheme';
 
 export default function Navbar() {
     const dispatch = useDispatch();
@@ -31,11 +32,11 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="bg-white shadow-md px-4 py-2 md:flex md:items-center md:justify-between">
+        <nav className="shadow-md px-4 py-2 md:flex md:items-center md:justify-between border-b">
             <div className="flex justify-between items-center me-5">
-                <span className="text-xl font-semibold text-gray-800">Dashboard</span>
+                <span className="text-xl font-semibold ">Dashboard</span>
                 <button
-                    className="text-gray-800 md:hidden block"
+                    className=" md:hidden block"
                     onClick={toggleMenu}
                 >
                     <svg
@@ -61,24 +62,25 @@ export default function Navbar() {
             >
                 <ul className="flex flex-col md:flex-row md:space-x-6">
                     <li>
-                        <Link className="text-gray-600 hover:text-gray-800" href="/">
+                        <Link className="hover:" href="/">
                             <p className='mb-0'>Inicio</p>
                         </Link>
                     </li>
                     <li>
-                        <Link className="text-gray-600 hover:text-gray-800" href="/dashboard/products">
+                        <Link className="hover:" href="/dashboard/products">
                             <p className='mb-0'>Productos</p>
                         </Link>
                     </li>
                     <li>
-                        <Link className="text-gray-600 hover:text-gray-800" href="/dashboard/users">
+                        <Link className="hover:" href="/dashboard/users">
                             <p className='mb-0'>Usuarios</p>
                         </Link>
                     </li>
                 </ul>
-                <div className="mt-2 md:mt-0">
+                <div className="mt-2 md:mt-0 flex gap-3 items-center">
+                    <ButtonTheme></ButtonTheme>
                     <Button onClick={handleLogout} className="bg-red-500 hover:bg-red-600">
-                       {isLoading? "Cargando...": "Cerrar Sesión"}
+                        {isLoading ? "Cargando..." : "Cerrar Sesión"}
                     </Button>
                 </div>
             </div>

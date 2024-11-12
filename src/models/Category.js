@@ -21,8 +21,9 @@ const CategorySchema = new mongoose.Schema({
     ref: 'User', // Hace referencia a la colección 'User' (si es aplicable)
   },
   createdAt: {
-    type: String, // String en formato ISODate como en la base de datos
+    type: Date,
     required: true,
+    default: Date.now,
   },
 });
 

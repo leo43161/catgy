@@ -23,7 +23,7 @@ export function Category({ categories1, setCategories, products }) {
     const [editingCategory, setEditingCategory] = useState(null);
     const [openModal, setOpenModal] = useState(false);
 
-    const handleEditProduct = (product) => {
+    const handleEditCategory = (product) => {
         setEditingCategory(product);
         setOpenModal(true);
     };
@@ -50,13 +50,14 @@ export function Category({ categories1, setCategories, products }) {
             <div className="mb-4">
                 <SearchBar onSearch={handleSearch} />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                 {isLoading ? (<div>Cargando...</div>)
                     : error ? (<div>Error al cargar los productos</div>)
                         : categories.map((category) => (
                             <CardCategory
                                 category={category}
-                                handleEditProduct={handleEditProduct}
+                                handleEditCategory={handleEditCategory}
+                                onCategoryAdded={refetch}
                             />
                         ))}
             </div>
@@ -80,13 +81,13 @@ export function Category({ categories1, setCategories, products }) {
                 </PaginationContent>
             </Pagination>
 
-            {/* <DialogCategory
+            <DialogCategory
                 showDialog={openModal}
                 setEditingCategory={setEditingCategory}
                 editingCategory={editingCategory}
                 setOpenModal={setOpenModal}
-                onProductAdded={refetch}
-            /> */}
+                onCategoryAdded={refetch}
+            />
         </div>
     )
 }

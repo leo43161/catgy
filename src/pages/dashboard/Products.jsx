@@ -8,7 +8,7 @@ export default function Dashboard() {
   const [categories, setCategories] = useState([])
   return (
     <div className="container mx-auto p-6 min-h-screen">
-      <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+      <h1 className="text-3xl font-bold mb-8 text-center">
         Maneja tus productos y categorias desde de aqui
       </h1>
       <div className="flex justify-center">
