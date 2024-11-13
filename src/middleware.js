@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"; 
+import { NextResponse } from "next/server";
 import { jwtVerify } from 'jose';
 import rolesJson from './roles.json';
 
@@ -7,6 +7,11 @@ export async function middleware(request) {
     const jwt = request.cookies.get("token");
     const currentPath = request.nextUrl.pathname;
 
+    // Permitir solicitudes GET sin autenticación en `/api/categories` y `/api/products`
+    if ((currentPath.startsWith('/api/categories') || currentPath.startsWith('/api/products')) && request.method === 'GET') {
+        return NextResponse.next();
+    }
+    
     /* Verifica si existe un token */
     if (jwt === undefined) {
         /* Si no existe un token, redirige a la página de inicio de sesión */
