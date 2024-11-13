@@ -145,7 +145,7 @@ export const DialogCategory = ({
                     onSubmit={submitHandler}
                     enableReinitialize // Habilitar reinicialización para cargar valores al editar
                 >
-                    {({ setFieldValue, values }) => (
+                    {({ setFieldValue, values, isSubmitting }) => (
                         <Form className="mt-3">
                             <div className="">
                                 {/* Visibilidad */}
@@ -173,9 +173,14 @@ export const DialogCategory = ({
                                     <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
                                 </div>
                                 {/* Botones */}
+                                {/* Botones */}
                                 <div className="flex justify-between pt-4 space-x-4">
-                                    <Button type="submit" className="">
-                                        {editingCategory ? "Actualizar Categoria" : "Agregar Categoria"}
+                                    <Button type="submit" disabled={isSubmitting} className="flex items-center justify-center">
+                                        {isSubmitting ? (
+                                            <div className="loader">Cargando...</div>
+                                        ) : (
+                                            editingCategory ? "Actualizar Categoria" : "Agregar Categoria"
+                                        )}
                                     </Button>
                                     <Button
                                         type="button"
