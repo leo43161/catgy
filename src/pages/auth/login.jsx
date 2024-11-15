@@ -25,9 +25,9 @@ export default function Login() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <form onSubmit={handleSubmit} className="w-full max-w-sm p-8 bg-white rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+        <div className="flex items-center justify-center min-h-screen bg-primary-foreground dark:bg-secondary  ">
+            <form onSubmit={handleSubmit} className="w-full max-w-sm p-8 rounded-lg shadow bg-primary dark:bg-primary">
+                <h2 className="text-2xl font-bold text-center mb-6 text-secondary dark:text-primary-foreground">
                     Iniciar Sesión
                 </h2>
                 <Input
@@ -35,7 +35,7 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Correo electrónico"
-                    className="mb-4"
+                    className="mb-4 bg-primary-foreground"
                     name="email"
                 />
                 <Input
@@ -43,10 +43,10 @@ export default function Login() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Contraseña"
-                    className="mb-4"
+                    className="mb-4 bg-primary-foreground"
                     name="password"
                 />
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full border-primary-foreground border" disabled={isLoading}>
                     {isLoading ? "Verificando..." : "Ingresar"}
                 </Button>
             </form>
