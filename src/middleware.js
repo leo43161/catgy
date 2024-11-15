@@ -9,9 +9,14 @@ export async function middleware(request) {
 
     // Permitir solicitudes GET sin autenticación en `/api/categories` y `/api/products`
     if ((currentPath.startsWith('/api/categories') || currentPath.startsWith('/api/products')) && request.method === 'GET') {
-        return NextResponse.next();
+        const res = NextResponse.next();
+        res.headers.append('Access-Control-Allow-Credentials', 'true');
+        res.headers.append('Access-Control-Allow-Origin', '*');
+        res.headers.append('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.headers.append('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
+        return res;
     }
-    
+
     /* Verifica si existe un token */
     if (jwt === undefined) {
         /* Si no existe un token, redirige a la página de inicio de sesión */
