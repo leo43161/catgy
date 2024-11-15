@@ -8,7 +8,7 @@ import SearchBar from "../SearchBar"
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 
 
-export function Category({ categories1, setCategories, products }) {
+export function Category() {
     const [currentPage, setCurrentPage] = useState(1);
     const [search, setSearch] = useState(""); // Estado para la búsqueda
     const limit = 6;
