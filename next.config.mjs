@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    async headers() {
+    /* async headers() {
         return [
             {
                 source: '/api/:path*',
@@ -24,6 +24,6 @@ const nextConfig = {
                 ]
             },
         ]
-    },
+    }, */
 };
 export default nextConfig;
