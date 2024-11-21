@@ -21,7 +21,7 @@ export const userApi = createApi({
       query: (credentials) => ({
         url: '/users/login',
         method: 'POST',
-        body: credentials,
+        body: JSON.stringify(credentials),
       }),
     }),
     logoutUser: builder.mutation({

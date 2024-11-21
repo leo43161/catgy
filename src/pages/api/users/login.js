@@ -32,8 +32,9 @@ const getLogin = (req, res) => {
 
 const loginHandler = async (req, res) => {
   try {
-    const { email: emailLogin, password } = req.body;
     await connectMongo();
+    const values = req.body;
+    const { email: emailLogin, password } = JSON.parse(values);
     // Buscar usuario por correo electrónico
     const user = await User.findOne({ email: emailLogin });
     if (!user) {
