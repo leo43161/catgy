@@ -1,6 +1,7 @@
 import connectMongo from "@/lib/mongodb";
 import User from "@/models/User";
 import Product from "@/models/Product";
+import Categories from "@/models/Category";
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -50,7 +51,7 @@ export default async function handler(req, res) {
 
       // Contar el número total de productos que coinciden con la búsqueda para calcular el total de páginas
       const totalProducts = await Product.countDocuments(query);
-
+      await Categories.find({});
       // Obtener los productos que coinciden con la búsqueda con paginación
       const fetchedProducts = await Product.find(query)
         .populate('categoryIDs', "name")
