@@ -3,7 +3,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const shopApi = createApi({
   reducerPath: 'shopApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  baseQuery: fetchBaseQuery({ 
+    baseUrl: '/api',
+    prepareHeaders: (headers) => {
+      // Aplica este encabezado por defecto si es necesario para todas las solicitudes
+      headers.set('Content-Type', 'application/json');
+      return headers;
+    },
+  }),
   endpoints: (builder) => ({
     getCategories: builder.query({
       query: ({ limit, offset, search }) => ({

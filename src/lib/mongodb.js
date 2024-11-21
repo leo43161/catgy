@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 const connectMongo = async () => {
+  console.log('Connecting to MongoDB...');
   if (mongoose.connection.readyState === 0) {
     try {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGO_URI, {
