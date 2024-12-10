@@ -44,10 +44,15 @@ export default async function handler(req, res) {
       console.log('FETCHING DOCUMENTS');
 
       // Obtener el limit, offset y el término de búsqueda desde las query params
-      const { limit, offset, search } = req.query;
+      const { limit, offset, search, category } = req.query;
 
       // Crear el objeto de búsqueda
-      const query = search ? { name: { $regex: search, $options: 'i' }, active: true } : { active: true }; // 'i' hace que la búsqueda sea insensible a mayúsculas
+      const query =
+        search ? { name: { $regex: search, $options: 'i' }, active: true }
+          :
+          category ? { categoryIDs: { $in: [category] }, active: true }
+            :
+            { active: true }; // 'i' hace que la búsqueda sea insensible a mayúsculas
 
       // Contar el número total de productos que coinciden con la búsqueda para calcular el total de páginas
       const totalProducts = await Product.countDocuments(query);
