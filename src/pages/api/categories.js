@@ -55,7 +55,7 @@ export default async function handler(req, res) {
         console.log('FETCHED DOCUMENTS');
         res.json({ categories: fetchedCategories, total: totalCategories });
       } else {
-        const fetchedCategories = await Category.find({});
+        const fetchedCategories = await Category.find(query);
         res.json(fetchedCategories);
       }
     } else if (req.method === 'PUT') {
