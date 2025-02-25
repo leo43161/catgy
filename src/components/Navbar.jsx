@@ -34,7 +34,7 @@ export default function Navbar() {
     return (
         <nav className="shadow-md px-4 py-2 md:flex md:items-center md:justify-between border-b">
             <div className="flex justify-between items-center me-5">
-                <span className="text-xl font-semibold ">Dashboard</span>
+                <span className="text-xl font-semibold ">Catgy</span>
                 <button
                     className=" md:hidden block"
                     onClick={toggleMenu}
