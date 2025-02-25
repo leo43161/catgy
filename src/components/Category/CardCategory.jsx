@@ -60,13 +60,13 @@ export default function CardCategory({
                             <h1 className="text-lg font-bold">{category.name}</h1>
                         </div>
                         <div className="flex justify-between items-center flex-col gap-3">
-                            <Button variant="outline" size="icon" onClick={() => handleEditCategory(category)}>
+                            <Button variant="" size="icon" onClick={() => handleEditCategory(category)}>
                                 <Pencil className="w-4 h-4" />
                             </Button>
-                            <Button variant="outline" size="icon" onClick={() => handleModalState("visible")}>
+                            <Button variant={category.visible ? "secondary" : "outline"} size="icon" onClick={() => handleModalState("visible")}>
                                 {category.visible ? <Eye className="w-4 h-4" /> : <EyeClosed className="w-4 h-4" />}
                             </Button>
-                            <Button variant="outline" size="icon" onClick={() => handleModalState("active")}>
+                            <Button variant="destructive" size="icon" onClick={() => handleModalState("active")}>
                                 <Trash2 className="w-4 h-4" />
                             </Button>
                         </div>

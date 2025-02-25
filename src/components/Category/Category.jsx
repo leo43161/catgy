@@ -65,7 +65,10 @@ export function Category() {
             {/* Paginación */}
             <Pagination>
                 <PaginationContent>
-                    <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                    <PaginationPrevious
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        className={`${currentPage === 1 ? "disabled" : ""}`}
+                    />
                     {[...Array(totalPages).keys()].map((number) => (
                         <PaginationItem key={number}>
                             <PaginationLink
@@ -77,7 +80,10 @@ export function Category() {
                             </PaginationLink>
                         </PaginationItem>
                     ))}
-                    <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+                    <PaginationNext
+                        className={`${currentPage === totalPages ? "disabled" : ""}`}
+                        onClick={() => handlePageChange(currentPage + 1)}
+                    />
                 </PaginationContent>
             </Pagination>
 

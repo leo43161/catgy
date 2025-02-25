@@ -60,27 +60,29 @@ export default function CardProduct({ product, handleEditProduct, onProductAdded
                         />
                     )}
                 </div>
-                <CardHeader className="py-0 mb-4">
+                <div className="py-0 mb-2 px-6">
                     <div className="flex gap-3">
                         {product?.categoryIDs?.map((category, idx) => (
-                            <Badge key={idx}>{category.name}</Badge>
+                            <Badge className="text-sm" key={idx}>{category.name}</Badge>
                         ))}
                     </div>
+                </div>
+                <CardHeader className="py-0 mb-4">
                     <CardTitle className="text-xl font-semibold">{product.name}</CardTitle>
-                    <p className="text-sm text-muted-foreground">{product.description}</p>
+                    <p className="text-sm text-muted-foreground line-clamp-4">{product.description}</p>
                 </CardHeader>
                 <CardContent>
                     <p className="text-lg font-bold">${product.price}</p>
                     <p className="text-sm text-muted-foreground">Stock: {product.stock}</p>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                    <Button variant="outline" size="icon" onClick={() => handleEditProduct(product)}>
+                    <Button variant="" size="icon" onClick={() => handleEditProduct(product)}>
                         <Pencil className="w-4 h-4" />
                     </Button>
-                    <Button variant="outline" size="icon" onClick={() => handleModalState("visible")}>
+                    <Button variant={product.visible ? "secondary" : "outline"} size="icon" onClick={() => handleModalState("visible")}>
                         {product.visible ? <Eye className="w-4 h-4" /> : <EyeClosed className="w-4 h-4" />}
                     </Button>
-                    <Button variant="outline" size="icon" onClick={() => handleModalState("active")}>
+                    <Button variant="destructive" size="icon" onClick={() => handleModalState("active")}>
                         <Trash2 className="w-4 h-4" />
                     </Button>
                 </CardFooter>

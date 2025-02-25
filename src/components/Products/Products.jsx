@@ -10,7 +10,7 @@ import CardProduct from "./CardProduct";
 export function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState(""); // Estado para la búsqueda
-  const limit = 6;
+  const limit = 8;
   const offset = (currentPage - 1) * limit;
 
   const { data: response, isLoading, error, refetch } = useGetProductsQuery({ limit, offset, search });
@@ -64,7 +64,10 @@ export function Products() {
       {/* Paginación */}
       <Pagination>
         <PaginationContent>
-          <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+          <PaginationPrevious
+            onClick={() => handlePageChange(currentPage - 1)}
+            className={`${currentPage === 1 ? "disabled" : ""}`}
+          />
           {[...Array(totalPages).keys()].map((number) => (
             <PaginationItem key={number}>
               <PaginationLink
@@ -76,7 +79,10 @@ export function Products() {
               </PaginationLink>
             </PaginationItem>
           ))}
-          <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+          <PaginationNext
+            className={`${currentPage === totalPages ? "disabled" : ""}`}
+            onClick={() => handlePageChange(currentPage + 1)}
+          />
         </PaginationContent>
       </Pagination>
 

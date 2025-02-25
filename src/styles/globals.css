@@ -78,6 +78,11 @@
   }
 }
 
+a.disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 @layer base {
   * {
     @apply border-border;
