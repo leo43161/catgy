@@ -49,7 +49,7 @@ export default function Tables() {
       <div className="mb-4">
         <SearchBar onSearch={handleSearch} placeholder="Buscar mesa..." />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 mb-4">
         {isLoading ? (<div>Cargando mesas...</div>)
           : error ? (<div>Error al cargar las mesas</div>)
             : tables?.map((table) => (
