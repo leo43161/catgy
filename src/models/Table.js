@@ -13,6 +13,10 @@ const TableSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Por favor, proporciona el precio del producto'],
     },
+    alert: {
+        type: String,
+        required: false,
+    },
     active: {
         type: Boolean,
         required: true,

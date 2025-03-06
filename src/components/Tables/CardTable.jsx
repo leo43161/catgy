@@ -5,23 +5,41 @@ import { Badge } from "@/components/ui/badge";
 export default function CardTable({ table, handleEditTable, onTableAdded }) {
   // Determinar el color del badge según el estado de la mesa
   const getStatusColor = (status) => {
-    switch(status) {
+    switch (status) {
       case 'ocupada': return 'bg-red-500';
       case 'solicitando': return 'bg-yellow-500';
       case 'libre': return 'bg-green-500';
       default: return 'bg-gray-500';
     }
   };
+  const getAlertColor = (status) => {
+    switch (status) {
+      case 'cuenta': return {
+        style: 'border-2 border-green-500',
+        text: 'text-green-600',
+        alert: 'Estan solicitando la cuenta'
+      };
+      case 'llamado': return {
+        style: 'border-2 border-yellow-500',
+        text: 'text-yellow-600',
+        alert: 'Necesotan atencion'
+      };
+      default: return {
+        style: '',
+        alert: null
+      };
+    }
+  };
 
   return (
     <Card className={`
       w-full 
-      ${table.callingAttention ? 'border-2 border-yellow-500' : ''}
+      ${getAlertColor(table.alert).style}
     `}>
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
           Mesa {table.name}
-          <Badge 
+          <Badge
             className={`${getStatusColor(table.status)} text-white`}
           >
             {table.status}
@@ -30,29 +48,18 @@ export default function CardTable({ table, handleEditTable, onTableAdded }) {
       </CardHeader>
       <CardContent>
         {/* Información adicional de la mesa */}
-        <p>Capacidad: {table.capacity} personas</p>
-        {table.callingAttention && (
-          <div className="text-yellow-600 font-bold mt-2">
-            ¡Solicita atención!
+        {getAlertColor(table.alert).alert && (
+          <div className={`${getAlertColor(table.alert).text} font-bold mt-2`}>
+            {getAlertColor(table.alert).alert}
           </div>
         )}
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           onClick={() => handleEditTable(table)}
         >
           Ver Pedido
-        </Button>
-        <Button 
-          variant="secondary" 
-          onClick={() => {
-            // Lógica para cambiar estado de llamado
-            table.callingAttention = !table.callingAttention;
-            onTableAdded();
-          }}
-        >
-          {table.callingAttention ? 'Atendida' : 'Llamar'}
         </Button>
       </CardFooter>
     </Card>
