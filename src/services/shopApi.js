@@ -20,7 +20,13 @@ export const shopApi = createApi({
         params: { limit, offset, search },
       }),
     }),
-    // Endpoint para productos
+    getTables: builder.query({
+      query: ({ limit, offset, search }) => ({
+        url: `/tables`,
+        params: { limit, offset, search },
+      }),
+    }),
+    // Endpoint para productos //////////////////////////////////////////////////////////////////
     createProduct: builder.mutation({
       query: (productData) => ({
         url: 'products',
@@ -42,7 +48,7 @@ export const shopApi = createApi({
         params
       }),
     }),
-    // Endpoint para categories
+    // Endpoint para categories //////////////////////////////////////////////////////////////////
     createCategory: builder.mutation({
       query: (categoryData) => ({
         url: 'categories',
@@ -64,7 +70,29 @@ export const shopApi = createApi({
         params
       }),
     }),
-    //Endpoint Upload
+    // Endpoint para tables //////////////////////////////////////////////////////////////////
+    createTable: builder.mutation({
+      query: (tableData) => ({
+        url: 'tables',
+        method: 'POST',
+        body: tableData,
+      }),
+    }),
+    updateTable: builder.mutation({
+      query: (tableData) => ({
+        url: 'tables',
+        method: 'PUT',
+        body: tableData,
+      }),
+    }),
+    updateTableState: builder.mutation({
+      query: (params) => ({
+        url: 'tables',
+        method: 'PUT',
+        params
+      }),
+    }),
+    //Endpoint Upload //////////////////////////////////////////////////////////////////
     uploadImage: builder.mutation({
       query: (formData) => ({
         url: '/upload',
@@ -87,6 +115,11 @@ export const {
   useCreateCategoryMutation,
   useUpdateCategoryMutation,
   useUpdateCategoryStateMutation,
+  //TABLES
+  useGetTablesQuery,
+  useCreateTableMutation,
+  useUpdateTableMutation,
+  useUpdateTableStateMutation,
   //UPLOADS
   useUploadImageMutation,
 } = shopApi;

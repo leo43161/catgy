@@ -72,6 +72,11 @@ export default function Navbar() {
                         </Link>
                     </li>
                     <li>
+                        <Link className="hover:" href="/dashboard/mesas">
+                            <p className='mb-0'>Mesas</p>
+                        </Link>
+                    </li>
+                    <li>
                         <Link className="hover:" href="/dashboard/users">
                             <p className='mb-0'>Usuarios</p>
                         </Link>
