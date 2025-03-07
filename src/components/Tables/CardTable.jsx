@@ -39,7 +39,7 @@ export default function CardTable({ table, handleEditTable, onTableAdded }) {
 
   return (
     <Card className={`
-      w-full 
+      w-full border-2 border-white
       ${getAlertColor(table.alert).style}
       flex flex-col justify-between
     `}>
@@ -62,7 +62,7 @@ export default function CardTable({ table, handleEditTable, onTableAdded }) {
         )}
         {table.status !== "libre" && (
           <>
-            <div className="flex items-center text-sm text-gray-600 mb-3">
+            <div className="flex items-center text-sm mb-3">
               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
@@ -72,8 +72,8 @@ export default function CardTable({ table, handleEditTable, onTableAdded }) {
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-600">Clientes:</span>
-                <span className="font-medium text-gray-800">
+                <span className="">Clientes:</span>
+                <span className="font-medium">
                   {/* {table.customers} personas */}
                   4 personas
                   </span>
@@ -82,8 +82,8 @@ export default function CardTable({ table, handleEditTable, onTableAdded }) {
               {table.status !== "reservada" && (
                 <>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Pedidos:</span>
-                    <span className="font-medium text-gray-800">
+                    <span className="">Pedidos:</span>
+                    <span className="font-medium">
                       {/* {table.orders} pedidos */}
                       2 pedidos
                       </span>
@@ -92,7 +92,7 @@ export default function CardTable({ table, handleEditTable, onTableAdded }) {
                   {table.lastOrderTime && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Última orden:</span>
-                      <span className="font-medium text-gray-800">
+                      <span className="font-medium">
                         Hace 10 min
                         {/* Hace {table.lastOrderTime} */}
                         </span>
@@ -106,7 +106,7 @@ export default function CardTable({ table, handleEditTable, onTableAdded }) {
               <div className="mt-4 pt-3 border-t border-gray-100">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-xs text-gray-500">Pendientes:</p>
+                    <p className="text-xs">Pendientes:</p>
                     <div className="flex flex-wrap gap-1 mt-1">
                       {pendingItems.map((item, idx) => (
                         <span key={idx} className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">
@@ -116,11 +116,11 @@ export default function CardTable({ table, handleEditTable, onTableAdded }) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-bold text-gray-800">
+                    <p className="text-lg font-bold">
                       {/* ${table.total.toLocaleString()} */}
                       ${4000}
                       </p>
-                    <p className="text-xs text-gray-500">Total parcial</p>
+                    <p className="text-xs">Total parcial</p>
                   </div>
                 </div>
               </div>
@@ -128,7 +128,7 @@ export default function CardTable({ table, handleEditTable, onTableAdded }) {
 
             {table.status === "reservada" && (
               <div className="mt-4 pt-3 border-t border-gray-100">
-                <p className="text-sm italic text-center text-gray-500">
+                <p className="text-sm italic text-center">
                   {/* Reservada para las {table.time} */}
                   Reservada para las 20:30
                 </p>
