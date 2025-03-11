@@ -39,7 +39,7 @@ export default function CardTable({ table, handleEditTable, onTableAdded }) {
 
   return (
     <Card className={`
-      w-full border-2 border-white
+      w-full border-2 border-gray-300 dark:border-white
       ${getAlertColor(table.alert).style}
       flex flex-col justify-between
     `}>
